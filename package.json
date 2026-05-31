@@ -1,0 +1,13 @@
+{
+  "name": "oj-price-gen",
+  "version": "1.0.0",
+  "description": "Price card generator for postcard sized paper (GitHub Pages compatible)",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^5.2.11"
+  }
+}

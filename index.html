@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>プレミアム・プライスカード・ジェネレーター</title>
+  <!-- Google Fonts: Inter (テキスト用), Outfit (見出し・価格用) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+
+  <!-- Web App UI Container -->
+  <div class="app-container">
+    <header class="app-header">
+      <div class="logo">
+        <span class="logo-icon">🏷️</span>
+        <h1>Price Card <span class="accent">Generator</span></h1>
+      </div>
+      <p class="subtitle">ハガキサイズ（横）プライスカード作成ツール</p>
+    </header>
+
+    <main class="app-main">
+      <!-- 左パネル: 入力フォーム -->
+      <section class="control-panel">
+        <div class="panel-card">
+          <div class="panel-header">
+            <h2>商品情報の入力</h2>
+            <p>パラメータ連携 (GET) にも対応しています</p>
+          </div>
+
+          <form id="price-form" onsubmit="event.preventDefault();">
+            <!-- 商品名 -->
+            <div class="form-group">
+              <label for="input-name">商品名 <span class="char-counter" id="name-counter">0文字</span></label>
+              <textarea id="input-name" placeholder="例：極上オーガニックコットンマスク&#10;(50枚入)" rows="3" required></textarea>
+              <div class="font-control-wrapper">
+                <div class="toggle-control">
+                  <label class="switch">
+                    <input type="checkbox" id="checkbox-auto-font" checked>
+                    <span class="slider-round"></span>
+                  </label>
+                  <span class="toggle-label">文字サイズ自動調整</span>
+                </div>
+                <div class="slider-control">
+                  <label for="slider-font-size">手動微調整: <span id="font-size-val">24px</span></label>
+                  <input type="range" id="slider-font-size" min="8" max="48" step="0.5" value="24" disabled>
+                </div>
+              </div>
+            </div>
+
+            <!-- 備考 -->
+            <div class="form-group">
+              <label for="input-memo">備考 <span class="char-counter" id="memo-counter">0文字</span></label>
+              <textarea id="input-memo" placeholder="例：BFE/PFE/VFE 99%カット高密度フィルタ採用。耳が痛くなりにくい極細やわらか耳紐を使用しています。" rows="4"></textarea>
+              <div class="font-control-wrapper">
+                <div class="toggle-control">
+                  <label class="switch">
+                    <input type="checkbox" id="checkbox-auto-font-memo" checked>
+                    <span class="slider-round"></span>
+                  </label>
+                  <span class="toggle-label">文字サイズ自動調整</span>
+                </div>
+                <div class="slider-control">
+                  <label for="slider-font-size-memo">手動微調整: <span id="font-size-val-memo">12px</span></label>
+                  <input type="range" id="slider-font-size-memo" min="6" max="24" step="0.5" value="12" disabled>
+                </div>
+              </div>
+              <span class="help-text note-blue">※ 青色の文字で印刷されます。</span>
+            </div>
+
+            <!-- 価格 -->
+            <div class="form-group">
+              <label for="input-price">価格 (円)</label>
+              <div class="price-input-wrapper">
+                <span class="currency-unit">¥</span>
+                <input type="text" id="input-price" placeholder="例：1,280" required>
+              </div>
+              <span class="help-text">自動的にカンマと￥マークが付与されて中央に表示されます。</span>
+            </div>
+
+            <!-- 作成日 -->
+            <div class="form-group">
+              <label for="input-date">作成日</label>
+              <input type="date" id="input-date">
+              <span class="help-text">プライスカードの右下隅に印刷されます。</span>
+            </div>
+          </form>
+        </div>
+
+        <div class="tips-card">
+          <h3>💡 URLパラメータでの連携方法</h3>
+          <p>以下の形式でURLにデータを渡すと、自動で入力された状態になります。</p>
+          <code id="param-demo-url">?name=商品名&memo=備考&price=価格</code>
+          <button type="button" class="btn btn-secondary btn-sm" id="btn-copy-url">テスト用URLを生成・コピー</button>
+        </div>
+      </section>
+
+      <!-- 右パネル: プレビュー -->
+      <section class="preview-panel">
+        <div class="preview-header">
+          <h2>リアルタイムプレビュー</h2>
+          <div class="preview-actions">
+            <span class="zoom-indicator" id="zoom-value">100%</span>
+            <button class="btn-icon" id="btn-zoom-out" title="ズームアウト">➖</button>
+            <button class="btn-icon" id="btn-zoom-in" title="ズームイン">➕</button>
+          </div>
+        </div>
+
+        <div class="preview-wrapper">
+          <!-- スケール制御用コンテナ -->
+          <div class="postcard-scale-container" id="postcard-scale-container">
+            <!-- 実際のハガキサイズプライスカード (148mm x 100mm) -->
+            <div class="postcard" id="postcard-preview">
+              <!-- プレビュー時のみ表示される青いフチ (0.6mm幅) -->
+              <div class="preview-blue-border"></div>
+
+              <!-- 印刷・表示コンテンツエリア (余白0.6mmを保つ) -->
+              <div class="postcard-content">
+                
+                <!-- 1行目: 商品タイトル欄 (高さ25mm, 中央揃え) -->
+                <div class="row row-title" id="card-row-title">
+                  <div class="text-fit-container" id="card-name-text">商品名がここに入ります</div>
+                </div>
+
+                <!-- 1行目と2行目の間の 0.4mm スペース -->
+                <div class="spacer-04mm"></div>
+
+                <!-- 2行目: 新品（左寄せ、高さ20mm） -->
+                <div class="row row-new" id="card-row-new">
+                  <span class="text-new">新品</span>
+                </div>
+
+                <!-- プレビュー時のみ表示される青く細い(1px)左右10mm切れた仕切り線 -->
+                <div class="preview-divider"></div>
+
+                <!-- 3行目: 備考欄 (青色、左寄せ、高さ16mm) -->
+                <div class="row row-memo" id="card-row-memo">
+                  <div class="text-fit-container" id="card-memo-text">備考がここに入ります。ここには商品の特徴やアピールポイントが表示され、文字数に合わせてフォントサイズが自動調整されます。</div>
+                </div>
+
+                <!-- プレビュー時のみ表示される青く細い(1px)左右10mm切れた仕切り線（備考と金額の間） -->
+                <div class="preview-divider"></div>
+
+                <!-- 4行目: 金額欄 (高さ25mm, 中央揃え) -->
+                <div class="row row-price" id="card-row-price">
+                  <span class="text-price" id="card-price-text">￥0</span>
+                </div>
+
+                <!-- 作成日 (右下隅, YYYY/M/D) -->
+                <div class="card-date" id="card-date-text">2026/5/31</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 印刷ボタンエリア -->
+        <div class="print-actions">
+          <button type="button" class="btn btn-primary btn-lg" id="btn-print">
+            <span class="btn-icon-print">🖨️</span> プライスカードを印刷する
+          </button>
+          <p class="print-note">※ 印刷時は用紙サイズを「ハガキ」または「148 x 100 mm」、方向を「横」に設定してください。プレビュー用の青いフチや仕切り線、フォームは印刷されません。</p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <p>&copy; 2026 Premium Price Card Generator. All Rights Reserved.</p>
+    </footer>
+  </div>
+
+  <!-- JavaScript Entry -->
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>
