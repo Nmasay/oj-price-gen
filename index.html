@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,10 +8,13 @@
   <!-- Google Fonts: Inter (テキスト用), Outfit (見出し・価格用) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;700;900&display=swap"
+    rel="stylesheet">
   <!-- CSS Stylesheet -->
   <link rel="stylesheet" href="./css/style.css">
 </head>
+
 <body>
 
   <!-- Web App UI Container -->
@@ -20,7 +24,7 @@
         <span class="logo-icon">🏷️</span>
         <h1>Price Card <span class="accent">Generator</span></h1>
       </div>
-      <p class="subtitle">ハガキサイズ（横）プライスカード作成ツール</p>
+      <p class="subtitle">プライスカード作成</p>
     </header>
 
     <main class="app-main">
@@ -71,7 +75,8 @@
             <!-- 備考 -->
             <div class="form-group">
               <label for="input-memo">備考 <span class="char-counter" id="memo-counter">0文字</span></label>
-              <textarea id="input-memo" placeholder="例：BFE/PFE/VFE 99%カット高密度フィルタ採用。耳が痛くなりにくい極細やわらか耳紐を使用しています。" rows="4"></textarea>
+              <textarea id="input-memo" placeholder="例：BFE/PFE/VFE 99%カット高密度フィルタ採用。耳が痛くなりにくい極細やわらか耳紐を使用しています。"
+                rows="4"></textarea>
               <div class="font-control-wrapper">
                 <div class="toggle-control">
                   <label class="switch">
@@ -144,7 +149,7 @@
 
               <!-- 印刷・表示コンテンツエリア (余白0.6mmを保つ) -->
               <div class="postcard-content">
-                
+
                 <!-- 1行目: 商品タイトル欄 (高さ25mm, 中央揃え) -->
                 <div class="row row-title" id="card-row-title">
                   <div class="text-fit-container" id="card-name-text">商品名がここに入ります</div>
@@ -163,7 +168,8 @@
 
                 <!-- 3行目: 備考欄 (青色、左寄せ、高さ16mm) -->
                 <div class="row row-memo" id="card-row-memo">
-                  <div class="text-fit-container" id="card-memo-text">備考がここに入ります。ここには商品の特徴やアピールポイントが表示され、文字数に合わせてフォントサイズが自動調整されます。</div>
+                  <div class="text-fit-container" id="card-memo-text">
+                    備考がここに入ります。ここには商品の特徴やアピールポイントが表示され、文字数に合わせてフォントサイズが自動調整されます。</div>
                 </div>
 
                 <!-- プレビュー時のみ表示される青く細い(1px)左右10mm切れた仕切り線（備考と金額の間） -->
@@ -191,4 +197,5 @@
   <!-- JavaScript Entry -->
   <script type="module" src="./js/app.js"></script>
 </body>
+
 </html>
