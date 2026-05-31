@@ -127,8 +127,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     // 自動調整ONのときのみ備考欄を自動計算
     if (checkboxAutoFontMemo && checkboxAutoFontMemo.checked) {
-      // 備考欄調整: 最大 13.5px, 最小 6px
-      adjustFontSize(cardMemoText, cardRowMemo, 13.5, 6);
+      // 備考欄調整: 最大 20px, 最小 6px
+      adjustFontSize(cardMemoText, cardRowMemo, 20, 6);
     }
   }
 
@@ -328,7 +328,7 @@ document.addEventListener('DOMContentLoaded', () => {
         adjustFontSize(cardName, rowTitle, 36, 5);
       }
       if (cardMemo && rowMemo) {
-        adjustFontSize(cardMemo, rowMemo, 13.5, 6);
+        adjustFontSize(cardMemo, rowMemo, 20, 6);
       }
     });
 
