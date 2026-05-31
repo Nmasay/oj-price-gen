@@ -126,6 +126,14 @@
           </div>
         </div>
 
+        <!-- 印刷ボタンエリア (プレビューの上部に移動) -->
+        <div class="print-actions" style="width: 100%; margin-bottom: 0.5rem;">
+          <button type="button" class="btn btn-primary btn-lg" id="btn-print" style="max-width: 100%;">
+            <span class="btn-icon-print">🖨️</span> プライスカードを印刷する
+          </button>
+          <p class="print-note">※ 用紙サイズを「ハガキ」、方向を「横」、余白「なし」に設定してください。</p>
+        </div>
+
         <div class="preview-wrapper">
           <!-- スケール制御用コンテナ -->
           <div class="postcard-scale-container" id="postcard-scale-container">
@@ -171,14 +179,6 @@
               </div>
             </div>
           </div>
-        </div>
-
-        <!-- 印刷ボタンエリア -->
-        <div class="print-actions">
-          <button type="button" class="btn btn-primary btn-lg" id="btn-print">
-            <span class="btn-icon-print">🖨️</span> プライスカードを印刷する
-          </button>
-          <p class="print-note">※ 印刷時は用紙サイズを「ハガキ」または「148 x 100 mm」、方向を「横」に設定してください。プレビュー用の青いフチや仕切り線、フォームは印刷されません。</p>
         </div>
       </section>
     </main>
