@@ -628,9 +628,10 @@ body {
     margin: 0 !important;
     max-width: 148mm !important;
     width: 148mm !important;
-    height: 100mm !important;
+    height: auto !important; /* 複数枚に対応させるため自動に */
     border: none !important;
     background: transparent !important;
+    overflow: visible !important; /* はみ出し（複数ページ）を許可 */
   }
 
   /* 3. プレビュー専用要素の非表示（青フチ、青仕切り線） */
