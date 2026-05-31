@@ -319,7 +319,7 @@ body {
 /* プレビューラッパー（背景の市松模様でリアルさを演出） */
 .preview-wrapper {
   width: 100%;
-  min-height: 480px;
+  min-height: 520px;
   background-color: #0b0f19;
   background-image: radial-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 0);
   background-size: 24px 24px;
@@ -328,19 +328,22 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  overflow: auto; /* 複数枚ある時はスクロール可能に */
   position: relative;
-  padding: 2rem;
+  padding: 3rem 2rem;
   box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
 /* スケール制御コンテナ */
 .postcard-scale-container {
   display: flex;
+  flex-direction: column; /* 複数枚あるときは縦に並べる */
+  gap: 30px; /* カード同士の間隔 */
   align-items: center;
   justify-content: center;
   transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   transform-origin: center center;
+  padding: 10px;
 }
 
 /* ==========================================================================
@@ -647,26 +650,22 @@ body {
   .preview-panel,
   .preview-wrapper,
   .postcard-scale-container {
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
+    position: relative !important;
     width: 148mm !important;
-    height: 100mm !important;
+    height: auto !important; /* 複数枚に対応させるため自動に */
     padding: 0 !important;
     margin: 0 !important;
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
     transform: none !important;
-    overflow: hidden !important;
+    overflow: visible !important; /* はみ出し（複数ページ）を許可 */
     display: block !important;
   }
 
   /* 5. 印刷用ハガキ実寸配置 */
   .postcard {
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
+    position: relative !important; /* 重ならずにフローさせるため relative に */
     width: 148mm !important;
     height: 100mm !important;
     margin: 0 !important;
@@ -675,6 +674,8 @@ body {
     border: none !important;
     background: transparent !important; /* 紙に印刷されているため背景は透明 */
     page-break-inside: avoid !important;
+    break-after: page !important; /* 各ハガキの切れ目で正確に改ページ */
+    page-break-after: always !important; /* レガシーブラウザ互換 */
   }
 
   .postcard-content {
@@ -826,4 +827,53 @@ input:checked + .slider-round:before {
   background: var(--text-muted);
   box-shadow: none;
   cursor: not-allowed;
+}
+
+/* ==========================================================================
+   一括印刷モード用 UI スタイル (画面表示用)
+   ========================================================================== */
+.batch-panel-card {
+  border: 1px solid rgba(99, 102, 241, 0.4) !important;
+  background: rgba(15, 23, 42, 0.8) !important;
+  box-shadow: 0 0 25px rgba(99, 102, 241, 0.15) !important;
+}
+
+.batch-status-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: flex-start;
+  margin-top: 1rem;
+}
+
+.batch-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+  box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+}
+
+.batch-count-text {
+  font-size: 1.05rem;
+  color: var(--text-main);
+  line-height: 1.4;
+}
+
+.batch-count-text strong {
+  font-size: 1.6rem;
+  color: var(--accent-color);
+  font-family: 'Outfit', sans-serif;
+  margin: 0 0.2rem;
+  vertical-align: middle;
+}
+
+.batch-desc-text {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.5;
 }

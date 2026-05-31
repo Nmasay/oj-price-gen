@@ -26,7 +26,23 @@
     <main class="app-main">
       <!-- 左パネル: 入力フォーム -->
       <section class="control-panel">
-        <div class="panel-card">
+        <!-- 一括印刷モード時に表示されるメッセージカード (初期状態は非表示) -->
+        <div class="panel-card batch-panel-card" id="batch-panel-card" style="display: none;">
+          <div class="panel-header">
+            <h2>📦 一括連続印刷モード</h2>
+            <p>AppSheetからの複数データ連携が起動しています</p>
+          </div>
+          <div class="batch-status-info">
+            <span class="batch-badge">BATCH MODE</span>
+            <p class="batch-count-text">現在 <strong id="batch-count-val">0</strong> 枚の商品カードが読み込まれています。</p>
+            <p class="batch-desc-text">一括モード中は、各カードのフォントサイズ自動調整が独立して実行されています。個別手動編集はできません。</p>
+          </div>
+          <button type="button" class="btn btn-secondary btn-sm" id="btn-reset-manual" style="margin-top: 1.5rem;">
+            🔄 手動編集モード（通常）に戻す
+          </button>
+        </div>
+
+        <div class="panel-card" id="manual-panel-card">
           <div class="panel-header">
             <h2>商品情報の入力</h2>
             <p>パラメータ連携 (GET) にも対応しています</p>

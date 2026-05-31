@@ -198,29 +198,48 @@ document.addEventListener('DOMContentLoaded', () => {
   // 4. URLパラメータ（GET）の解析と読み込み
   // ==========================================================================
 
+  // ==========================================================================
+  // 4. URLパラメータ（GET）の解析と読み込み
+  // ==========================================================================
+
   function loadUrlParameters() {
     const params = new URLSearchParams(window.location.search);
     
-    // 商品名
-    const nameParam = params.get('name');
+    // 一括（複数）パラメータの取得
+    const namesParam = params.get('names');
+    const memosParam = params.get('memos');
+    const pricesParam = params.get('prices');
+
+    if (namesParam) {
+      const namesList = namesParam.split('|');
+      const memosList = memosParam ? memosParam.split('|') : [];
+      const pricesList = pricesParam ? pricesParam.split('|') : [];
+
+      // 複数データが渡された場合は一括印刷モードを起動
+      if (namesList.length > 1) {
+        setupBatchPrintMode(namesList, memosList, pricesList);
+        return;
+      }
+    }
+
+    // 単一パラメータまたは通常時
+    const nameParam = params.get('name') || params.get('names');
+    const memoParam = params.get('memo') || params.get('memos');
+    const priceParam = params.get('price') || params.get('prices');
+
     if (nameParam) {
       inputName.value = nameParam;
       cardNameText.textContent = nameParam;
       nameCounter.textContent = `${nameParam.length}文字`;
     }
 
-    // 備考
-    const memoParam = params.get('memo');
     if (memoParam) {
       inputMemo.value = memoParam;
       cardMemoText.textContent = memoParam;
       memoCounter.textContent = `${memoParam.length}文字`;
     }
 
-    // 価格
-    const priceParam = params.get('price');
     if (priceParam) {
-      // 数値以外の入力をフィルタリングしてフォーマット
       const rawNumber = priceParam.replace(/[^\d]/g, '');
       if (rawNumber) {
         const formatted = Number(rawNumber).toLocaleString();
@@ -229,10 +248,96 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // パラメータが渡されていた場合は即座にテキストサイズをフィットさせる
     if (nameParam || memoParam || priceParam) {
       triggerTextAutofit();
     }
+  }
+
+  /**
+   * 一括連続印刷モードのセットアップ
+   * @param {Array<string>} names - 商品名の配列
+   * @param {Array<string>} memos - 備考の配列
+   * @param {Array<string>} prices - 価格の配列
+   */
+  function setupBatchPrintMode(names, memos, prices) {
+    const batchPanelCard = document.getElementById('batch-panel-card');
+    const manualPanelCard = document.getElementById('manual-panel-card');
+    const batchCountVal = document.getElementById('batch-count-val');
+
+    // 左側UIの切り替え（手動フォームを非表示にし、一括メッセージを表示）
+    if (batchPanelCard && manualPanelCard) {
+      batchPanelCard.style.display = 'block';
+      manualPanelCard.style.display = 'none';
+      batchCountVal.textContent = names.length;
+    }
+
+    // 既存のハガキプレビュー（#postcard-preview）をクローンしてテンプレートとする
+    const templateCard = postcardPreview;
+    if (!templateCard) return;
+
+    const cloneSource = templateCard.cloneNode(true);
+    cloneSource.removeAttribute('id'); // IDの重複を避ける
+
+    // プレビュー表示エリアを空にする
+    postcardScaleContainer.innerHTML = '';
+
+    // 本日の日付を自動取得
+    const today = new Date();
+    const formattedDate = `${today.getFullYear()}/${today.getMonth() + 1}/${today.getDate()}`;
+
+    // データの数だけカードを生成して並べる
+    names.forEach((name, index) => {
+      const card = cloneSource.cloneNode(true);
+
+      // 各要素の取得
+      const cardName = card.querySelector('.row-title .text-fit-container');
+      const cardMemo = card.querySelector('.row-memo .text-fit-container');
+      const cardPrice = card.querySelector('.text-price');
+      const cardDate = card.querySelector('.card-date');
+
+      // IDの更新（一括内の競合を避けるため）
+      if (cardName) cardName.id = `card-name-text-batch-${index}`;
+      if (cardMemo) cardMemo.id = `card-memo-text-batch-${index}`;
+      if (cardPrice) cardPrice.id = `card-price-text-batch-${index}`;
+      if (cardDate) cardDate.id = `card-date-text-batch-${index}`;
+
+      const rowTitle = card.querySelector('.row-title');
+      const rowMemo = card.querySelector('.row-memo');
+      if (rowTitle) rowTitle.id = `card-row-title-batch-${index}`;
+      if (rowMemo) rowMemo.id = `card-row-memo-batch-${index}`;
+
+      // データの流し込み
+      if (cardName) cardName.textContent = name;
+      if (cardMemo) cardMemo.textContent = memos[index] || '';
+      
+      // 価格フォーマット
+      if (cardPrice) {
+        const rawPrice = (prices[index] || '').replace(/[^\d]/g, '');
+        const formattedPrice = rawPrice ? Number(rawPrice).toLocaleString() : '0';
+        cardPrice.textContent = `￥${formattedPrice}`;
+      }
+
+      // 日付
+      if (cardDate) cardDate.textContent = formattedDate;
+
+      // プレビューコンテナへ追加
+      postcardScaleContainer.appendChild(card);
+
+      // 追加した各カードに対して、フォントのオートフィットを個別に実行
+      if (cardName && rowTitle) {
+        adjustFontSize(cardName, rowTitle, 36, 5);
+      }
+      if (cardMemo && rowMemo) {
+        adjustFontSize(cardMemo, rowMemo, 13.5, 6);
+      }
+    });
+
+    // 複数カードがあるため、全体像が見やすいようにズーム倍率を少し引きにする
+    setTimeout(() => {
+      const wrapperWidth = document.querySelector('.preview-wrapper').clientWidth;
+      const fitScale = (wrapperWidth * 0.8) / 560; // 560pxはハガキの実寸幅
+      applyZoom(Math.max(0.4, Math.min(fitScale, 0.7))); // 40%〜70%に制限して見やすく
+    }, 150);
   }
 
   /**
@@ -363,6 +468,15 @@ document.addEventListener('DOMContentLoaded', () => {
     fontSizeValMemo.textContent = `${val}px`;
     cardMemoText.style.fontSize = `${val}px`;
   });
+
+  // 手動モードに戻す（リセット）ボタンのイベント
+  const btnResetManual = document.getElementById('btn-reset-manual');
+  if (btnResetManual) {
+    btnResetManual.addEventListener('click', () => {
+      // URLパラメータをクリアしてリロード
+      window.location.href = window.location.origin + window.location.pathname;
+    });
+  }
 
   // ==========================================================================
   // アプリ起動処理の実行
