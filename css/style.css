@@ -679,6 +679,12 @@ body {
     page-break-after: always !important; /* レガシーブラウザ互換 */
   }
 
+  /* 最後のカードの後ろには余分な改ページを入れない（白紙ページ防止） */
+  .postcard:last-child {
+    break-after: auto !important;
+    page-break-after: auto !important;
+  }
+
   .postcard-content {
     padding: 0.6mm !important; /* 厳密に上下左右0.6mmの余白を維持 */
   }
