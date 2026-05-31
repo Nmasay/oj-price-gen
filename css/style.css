@@ -600,12 +600,12 @@ body {
 
   html, body {
     width: 148mm !important;
-    height: 100mm !important;
+    height: auto !important; /* 複数枚に対応させるため自動に */
     margin: 0 !important;
     padding: 0 !important;
     background: #ffffff !important;
     color: #000000 !important;
-    overflow: hidden !important;
+    overflow: visible !important; /* はみ出し（複数ページ）を許可 */
     -webkit-print-color-adjust: exact !important; /* 背景色・印刷色調整の強制 */
     print-color-adjust: exact !important;
   }
