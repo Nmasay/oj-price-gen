@@ -97,6 +97,16 @@ document.addEventListener('DOMContentLoaded', () => {
    * @param {number} minPx - 最小フォントサイズ (px)
    */
   function adjustFontSize(element, container, maxPx, minPx = 6) {
+    // 測定中のみ、インナー要素の max-height や height, overflow などの制限を一時的に解除し、
+    // 中身のはみ出しサイズ (scrollHeight/Width) が正確に取得できるようにする (はみ出し自動判定の核心)
+    const originalMaxHeight = element.style.maxHeight;
+    const originalHeight = element.style.height;
+    const originalOverflow = element.style.overflow;
+    
+    element.style.maxHeight = 'none';
+    element.style.height = 'auto';
+    element.style.overflow = 'visible';
+
     // 0.5px刻みの精度で計算するため、値を2倍にして整数で二分探索を行う
     let low = Math.floor(minPx * 2);
     let high = Math.floor(maxPx * 2);
@@ -120,6 +130,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // 確定した最適サイズを適用
     const finalSize = optimalSize / 2;
     element.style.fontSize = `${finalSize}px`;
+
+    // 測定完了後、元のスタイル制限に安全に戻す
+    element.style.maxHeight = originalMaxHeight;
+    element.style.height = originalHeight;
+    element.style.overflow = originalOverflow;
 
     // 自動調整ONの場合のみ、計算結果を手動調整スライダーに同期させる
     if (element === cardNameText && checkboxAutoFont && checkboxAutoFont.checked) {
