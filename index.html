@@ -62,14 +62,13 @@
 
           <div class="panel-header">
             <h2>商品情報の入力</h2>
-            <p>パラメータ連携 (GET) にも対応しています</p>
           </div>
 
           <form id="price-form" onsubmit="event.preventDefault();">
             <!-- 商品名 -->
             <div class="form-group">
               <label for="input-name">商品名 <span class="char-counter" id="name-counter">0文字</span></label>
-              <textarea id="input-name" placeholder="例：極上オーガニックコットンマスク&#10;(50枚入)" rows="3" required></textarea>
+              <textarea id="input-name" rows="3" required></textarea>
               <div class="font-control-wrapper">
                 <div class="toggle-control">
                   <label class="switch">
@@ -88,8 +87,7 @@
             <!-- 備考 -->
             <div class="form-group">
               <label for="input-memo">備考 <span class="char-counter" id="memo-counter">0文字</span></label>
-              <textarea id="input-memo" placeholder="例：BFE/PFE/VFE 99%カット高密度フィルタ採用。耳が痛くなりにくい極細やわらか耳紐を使用しています。"
-                rows="4"></textarea>
+              <textarea id="input-memo" rows="4"></textarea>
               <div class="font-control-wrapper">
                 <div class="toggle-control">
                   <label class="switch">
@@ -110,7 +108,7 @@
               <label for="input-price">価格 (円)</label>
               <div class="price-input-wrapper">
                 <span class="currency-unit">¥</span>
-                <input type="text" id="input-price" placeholder="例：1,280" required>
+                <input type="text" id="input-price" required>
               </div>
             </div>
 
