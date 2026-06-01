@@ -148,6 +148,36 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /**
+   * 与えられたテキストが空、または AppSheet の空のURL表現であるかを判定するヘルパー関数
+   * @param {string} text - 判定するURL文字列
+   * @returns {boolean} - 空の場合は true
+   */
+  function isUrlEmpty(text) {
+    if (!text) return true;
+    const trimmed = text.trim();
+    if (trimmed === '') return true;
+    
+    // AppSheet の空のURL表現 {"Url":"","LinkText":""} などを判定
+    if (trimmed === '{"Url":"","LinkText":""}' || trimmed.includes('{"Url":""') || trimmed.includes('"Url":""')) {
+      return true;
+    }
+    
+    // 念のためJSON形式の空判定も試みる
+    if (trimmed.startsWith('{') && trimmed.endsWith('}')) {
+      try {
+        const obj = JSON.parse(trimmed);
+        if (obj && (obj.Url === '' || obj.url === '')) {
+          return true;
+        }
+      } catch (e) {
+        // パースできない場合は通常の文字列として判定を進める
+      }
+    }
+    
+    return false;
+  }
+
+  /**
    * 指定したラッパー（「商品詳細」ラベル含む）にQRコードを Canvas 形式で描画する共通関数
    * @param {HTMLElement} wrapper - QRコードラッパー要素 (.qr-code-wrapper)
    * @param {string} text - QRコード化する文字列 (URL)
@@ -159,7 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
     container.innerHTML = '';
     
     // データが空または未設定の場合は非表示にして完全スルー
-    if (!text || text.trim() === '') {
+    if (isUrlEmpty(text)) {
       wrapper.style.display = 'none';
       return;
     }
@@ -313,10 +343,11 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    if (qrParam) {
+    if (qrParam && !isUrlEmpty(qrParam)) {
       inputQrUrl.value = qrParam;
       generateQRCode(cardQrCode, qrParam);
     } else {
+      inputQrUrl.value = ''; // 空白のものはフォーム側も空白にする
       generateQRCode(cardQrCode, '');
     }
 
@@ -626,8 +657,13 @@ document.addEventListener('DOMContentLoaded', () => {
     inputPrice.value = rawPrice ? Number(rawPrice).toLocaleString() : '';
     
     const qrVal = batchData.qrs[index] || '';
-    inputQrUrl.value = qrVal;
-    generateQRCode(cardQrCode, qrVal);
+    if (isUrlEmpty(qrVal)) {
+      inputQrUrl.value = '';
+      generateQRCode(cardQrCode, '');
+    } else {
+      inputQrUrl.value = qrVal;
+      generateQRCode(cardQrCode, qrVal);
+    }
     
     // 文字カウンターの更新
     nameCounter.textContent = `${inputName.value.length}文字`;
