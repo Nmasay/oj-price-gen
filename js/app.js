@@ -239,8 +239,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 備考欄
   inputMemo.addEventListener('input', () => {
-    const text = inputMemo.value.trim() || '備考がここに入ります。';
-    cardMemoText.textContent = text;
+    const text = inputMemo.value.trim();
+    cardMemoText.textContent = text; // 空欄の時は完全に空（白紙）にする
     memoCounter.textContent = `${inputMemo.value.length}文字`;
     triggerTextAutofit();
     updateDemoUrl();
@@ -692,7 +692,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 2. プレビュー表示を手動用に更新
     cardNameText.textContent = inputName.value || '商品名がここに入ります';
-    cardMemoText.textContent = inputMemo.value || '備考がここに入ります。';
+    cardMemoText.textContent = inputMemo.value; // 空欄の時は完全に空（白紙）にする
     cardPriceText.textContent = inputPrice.value ? `￥${inputPrice.value}` : '￥0';
 
     // 3. 表示UIの切り替え
