@@ -367,7 +367,7 @@ body {
   left: 0;
   width: 148mm;
   height: 100mm;
-  border: 4mm solid #0055ff; /* 飾りフチの青帯を4mmの太さに変更し、ベタ塗りに */
+  border: 3.5mm solid #0055ff; /* 飾りフチの青帯を3.5mmに微調整 */
   box-sizing: border-box;
   pointer-events: none;
   z-index: 10;
