@@ -360,15 +360,14 @@ body {
   box-sizing: border-box;
 }
 
-/* プレビュー限定: 青い余白フチ (0.6mm) */
+/* プレビュー限定: 青い余白フチ (実際の用紙の青枠を再現) */
 .preview-blue-border {
   position: absolute;
   top: 0;
   left: 0;
   width: 148mm;
   height: 100mm;
-  border: 0.6mm solid rgba(0, 102, 255, 0.85); /* 0.6mmの青い境界線 */
-  background-color: rgba(0, 102, 255, 0.03); /* 青いフチの余白部分を微かに着色 */
+  border: 4mm solid #0055ff; /* 飾りフチの青帯を4mmの太さに変更し、ベタ塗りに */
   box-sizing: border-box;
   pointer-events: none;
   z-index: 10;
