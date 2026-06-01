@@ -137,8 +137,8 @@ document.addEventListener('DOMContentLoaded', () => {
   function triggerTextAutofit() {
     // 自動調整ONのときのみ商品タイトルを自動計算
     if (checkboxAutoFont && checkboxAutoFont.checked) {
-      // 商品名タイトル調整: 最大 36px, 最小 5px
-      adjustFontSize(cardNameText, cardRowTitle, 36, 5);
+      // 商品名タイトル調整: 最大 48px (スライダー最大値に引き上げ), 最小 5px
+      adjustFontSize(cardNameText, cardRowTitle, 48, 5);
     }
     // 自動調整ONのときのみ備考欄を自動計算
     if (checkboxAutoFontMemo && checkboxAutoFontMemo.checked) {
@@ -464,7 +464,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (cardName && rowTitle) {
         if (batchData.titleAutos[index]) {
           // 自動調整ONの場合は計算して現在の値をキャッシュに保存
-          adjustFontSize(cardName, rowTitle, 36, 5);
+          adjustFontSize(cardName, rowTitle, 48, 5);
           batchData.titleSizes[index] = parseFloat(cardName.style.fontSize);
         } else {
           // 自動調整OFFの場合は手動指定されたサイズを適用
