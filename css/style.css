@@ -409,7 +409,7 @@ body {
   height: 25mm;
   justify-content: center;
   text-align: center;
-  padding: 0 5mm;
+  padding: 3.5mm 5mm 0; /* 上部に3.5mmの余白を設け、飾りフチから文字をスマートに離して配置 */
 }
 
 .row-title .text-fit-container {
