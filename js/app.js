@@ -44,7 +44,15 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentZoom = 1.0;
 
   // --- 状態管理変数 (一括印刷・個別編集用) ---
-  const batchData = { names: [], memos: [], prices: [] };
+  const batchData = {
+    names: [],
+    memos: [],
+    prices: [],
+    titleAutos: [], // 各ハガキのタイトル自動調整ON/OFF
+    titleSizes: [], // 各ハガキのタイトルフォントサイズ (px)
+    memoAutos: [],  // 各ハガキの備考自動調整ON/OFF
+    memoSizes: []   // 各ハガキの備考フォントサイズ (px)
+  };
   let currentEditingIndex = null;
 
   // ==========================================================================
@@ -273,6 +281,12 @@ document.addEventListener('DOMContentLoaded', () => {
     batchData.memos = memos;
     batchData.prices = prices;
 
+    // 個別フォント自動・手動設定の配列初期化（未設定の場合のみ）
+    names.forEach((_, index) => {
+      if (batchData.titleAutos[index] === undefined) batchData.titleAutos[index] = true;
+      if (batchData.memoAutos[index] === undefined) batchData.memoAutos[index] = true;
+    });
+
     // 左側UIの切り替え（手動フォームを非表示にし、一括メッセージを表示）
     if (batchPanelCard && manualPanelCard) {
       batchPanelCard.style.display = 'block';
@@ -348,12 +362,28 @@ document.addEventListener('DOMContentLoaded', () => {
       // プレビューコンテナへ追加
       postcardScaleContainer.appendChild(cardWrapper);
 
-      // 追加した各カードに対して、フォントのオートフィットを個別に実行
+      // 追加した各カードに対して、フォントのサイズ設定を適用
       if (cardName && rowTitle) {
-        adjustFontSize(cardName, rowTitle, 36, 5);
+        if (batchData.titleAutos[index]) {
+          // 自動調整ONの場合は計算して現在の値をキャッシュに保存
+          adjustFontSize(cardName, rowTitle, 36, 5);
+          batchData.titleSizes[index] = parseFloat(cardName.style.fontSize);
+        } else {
+          // 自動調整OFFの場合は手動指定されたサイズを適用
+          const size = batchData.titleSizes[index] || 24;
+          cardName.style.fontSize = `${size}px`;
+        }
       }
       if (cardMemo && rowMemo) {
-        adjustFontSize(cardMemo, rowMemo, 20, 6);
+        if (batchData.memoAutos[index]) {
+          // 自動調整ONの場合は計算して現在の値をキャッシュに保存
+          adjustFontSize(cardMemo, rowMemo, 20, 6);
+          batchData.memoSizes[index] = parseFloat(cardMemo.style.fontSize);
+        } else {
+          // 自動調整OFFの場合は手動指定されたサイズを適用
+          const size = batchData.memoSizes[index] || 12;
+          cardMemo.style.fontSize = `${size}px`;
+        }
       }
     });
 
@@ -528,6 +558,27 @@ document.addEventListener('DOMContentLoaded', () => {
     nameCounter.textContent = `${inputName.value.length}文字`;
     memoCounter.textContent = `${inputMemo.value.length}文字`;
 
+    // 1.5. 個別フォント設定をフォームUIに復元
+    const isTitleAuto = batchData.titleAutos[index] !== false; // 未設定ならtrue
+    checkboxAutoFont.checked = isTitleAuto;
+    sliderFontSize.disabled = isTitleAuto;
+    const tSize = batchData.titleSizes[index] || 24;
+    sliderFontSize.value = tSize;
+    fontSizeVal.textContent = `${tSize}px`;
+    if (!isTitleAuto) {
+      cardNameText.style.fontSize = `${tSize}px`;
+    }
+
+    const isMemoAuto = batchData.memoAutos[index] !== false; // 未設定ならtrue
+    checkboxAutoFontMemo.checked = isMemoAuto;
+    sliderFontSizeMemo.disabled = isMemoAuto;
+    const mSize = batchData.memoSizes[index] || 12;
+    sliderFontSizeMemo.value = mSize;
+    fontSizeValMemo.textContent = `${mSize}px`;
+    if (!isMemoAuto) {
+      cardMemoText.style.fontSize = `${mSize}px`;
+    }
+
     // 2. プレビュー表示を手動用に更新
     cardNameText.textContent = inputName.value || '商品名がここに入ります';
     cardMemoText.textContent = inputMemo.value || '備考がここに入ります';
@@ -577,6 +628,12 @@ document.addEventListener('DOMContentLoaded', () => {
         batchData.names[currentEditingIndex] = inputName.value.trim();
         batchData.memos[currentEditingIndex] = inputMemo.value.trim();
         batchData.prices[currentEditingIndex] = inputPrice.value.replace(/[^\d]/g, '');
+        
+        // 個別フォントの調整状態を保存
+        batchData.titleAutos[currentEditingIndex] = checkboxAutoFont.checked;
+        batchData.titleSizes[currentEditingIndex] = parseFloat(sliderFontSize.value);
+        batchData.memoAutos[currentEditingIndex] = checkboxAutoFontMemo.checked;
+        batchData.memoSizes[currentEditingIndex] = parseFloat(sliderFontSizeMemo.value);
         
         currentEditingIndex = null;
         
