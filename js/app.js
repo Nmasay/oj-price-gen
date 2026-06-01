@@ -344,6 +344,7 @@ document.addEventListener('DOMContentLoaded', () => {
    * テスト用URLのコピー用に、入力された内容に基づいてクエリパラメータを生成
    */
   function updateDemoUrl() {
+    if (!paramDemoUrl) return; // 要素がない場合はスキップ
     const baseUrl = window.location.origin + window.location.pathname;
     const name = encodeURIComponent(inputName.value.trim() || 'テスト商品');
     const memo = encodeURIComponent(inputMemo.value.trim() || 'テスト備考');
@@ -354,23 +355,25 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // URLをクリップボードにコピーする
-  btnCopyUrl.addEventListener('click', () => {
-    const fullUrl = window.location.origin + window.location.pathname + paramDemoUrl.textContent;
-    navigator.clipboard.writeText(fullUrl)
-      .then(() => {
-        const originalText = btnCopyUrl.textContent;
-        btnCopyUrl.textContent = '✨ コピー完了！';
-        btnCopyUrl.classList.add('btn-success');
-        setTimeout(() => {
-          btnCopyUrl.textContent = originalText;
-          btnCopyUrl.classList.remove('btn-success');
-        }, 2000);
-      })
-      .catch(err => {
-        console.error('URLのコピーに失敗しました:', err);
-        alert('URLのコピーに失敗しました。手動でコピーしてください。');
-      });
-  });
+  if (btnCopyUrl && paramDemoUrl) {
+    btnCopyUrl.addEventListener('click', () => {
+      const fullUrl = window.location.origin + window.location.pathname + paramDemoUrl.textContent;
+      navigator.clipboard.writeText(fullUrl)
+        .then(() => {
+          const originalText = btnCopyUrl.textContent;
+          btnCopyUrl.textContent = '✨ コピー完了！';
+          btnCopyUrl.classList.add('btn-success');
+          setTimeout(() => {
+            btnCopyUrl.textContent = originalText;
+            btnCopyUrl.classList.remove('btn-success');
+          }, 2000);
+        })
+        .catch(err => {
+          console.error('URLのコピーに失敗しました:', err);
+          alert('URLのコピーに失敗しました。手動でコピーしてください。');
+        });
+    });
+  }
 
   // ==========================================================================
   // 5. ズーム制御 (プレビューを見やすく調整)
