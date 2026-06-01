@@ -481,7 +481,7 @@ body {
 .text-price {
   font-family: 'Outfit', 'Noto Sans JP', sans-serif;
   font-weight: 800;
-  font-size: 52pt; /* 非常に大きく見やすく */
+  font-size: 78pt; /* 非常に大きく見やすく (52ptから1.5倍に拡大) */
   color: var(--print-color-black);
   letter-spacing: -0.02em;
   display: inline-block;
