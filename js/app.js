@@ -2,8 +2,6 @@
    プレミアム・プライスカード・ジェネレーター JS (GitHub Pages版)
    ========================================================================== */
 
-import QRCode from 'qrcode';
-
 document.addEventListener('DOMContentLoaded', () => {
   // --- DOM要素の取得 ---
   const inputName = document.getElementById('input-name');
