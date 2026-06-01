@@ -273,6 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
    */
   function setupBatchPrintMode(names, memos, prices) {
     const batchPanelCard = document.getElementById('batch-panel-card');
+    const batchResetPanelCard = document.getElementById('batch-reset-panel-card');
     const manualPanelCard = document.getElementById('manual-panel-card');
     const batchCountVal = document.getElementById('batch-count-val');
 
@@ -290,6 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 左側UIの切り替え（手動フォームを非表示にし、一括メッセージを表示）
     if (batchPanelCard && manualPanelCard) {
       batchPanelCard.style.display = 'block';
+      if (batchResetPanelCard) batchResetPanelCard.style.display = 'block';
       manualPanelCard.style.display = 'none';
       batchCountVal.textContent = names.length;
     }
@@ -586,11 +588,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 3. 表示UIの切り替え
     const batchPanelCard = document.getElementById('batch-panel-card');
+    const batchResetPanelCard = document.getElementById('batch-reset-panel-card');
     const manualPanelCard = document.getElementById('manual-panel-card');
     const batchEditActions = document.getElementById('batch-edit-actions');
     
     if (batchPanelCard && manualPanelCard) {
       batchPanelCard.style.display = 'none';
+      if (batchResetPanelCard) batchResetPanelCard.style.display = 'none';
       manualPanelCard.style.display = 'block';
     }
     if (batchEditActions) {

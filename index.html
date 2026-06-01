@@ -41,8 +41,12 @@
             <p class="batch-count-text">現在 <strong id="batch-count-val">0</strong> 枚の商品カードが読み込まれています。</p>
             <p class="batch-desc-text">一括モード中は各カードが自動サイズ調整されて並びます。ハガキの右上に表示される「✏️ 個別編集」から、いつでも個別の微調整や編集が行えます。</p>
           </div>
-          <button type="button" class="btn btn-secondary btn-sm" id="btn-reset-manual" style="margin-top: 1.5rem;">
-            🔄 手動編集モード（通常）に戻す
+        </div>
+
+        <!-- 独立した手動復帰用パネル（誤操作防止のため一括印刷カードの下に配置） -->
+        <div class="panel-card" id="batch-reset-panel-card" style="display: none; margin-top: 1rem; padding: 1.25rem 1.5rem;">
+          <button type="button" class="btn btn-secondary btn-sm" id="btn-reset-manual" style="width: 100%; padding: 0.6rem 1rem; font-weight: 600;">
+            🔄 単一プライス作成へ戻る
           </button>
         </div>
 
