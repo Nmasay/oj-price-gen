@@ -582,6 +582,62 @@ body {
   margin-top: auto;
 }
 
+/* プレビューカードの編集ホバー用ラッパー */
+.postcard-wrapper {
+  position: relative;
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.postcard-wrapper:hover {
+  transform: translateY(-2px);
+}
+
+/* 個別編集オーバーレイ */
+.card-edit-overlay {
+  position: absolute;
+  top: 5mm;
+  right: 5mm;
+  z-index: 20;
+  opacity: 0;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  pointer-events: auto;
+  transform: translateY(5px);
+}
+
+.postcard-wrapper:hover .card-edit-overlay {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 編集ボタンのプレミアムデザイン */
+.btn-card-edit {
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--text-main);
+  padding: 0.5rem 0.9rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: inherit;
+}
+
+.btn-card-edit:hover {
+  background: var(--accent-gradient);
+  border-color: transparent;
+  box-shadow: 0 6px 20px rgba(56, 189, 248, 0.4);
+  transform: translateY(-1px);
+  color: white;
+}
+
 /* ユーティリティ */
 .no-print {
   /* 印刷対象外マーク */
@@ -633,8 +689,9 @@ body {
     overflow: visible !important; /* はみ出し（複数ページ）を許可 */
   }
 
-  /* 3. プレビュー専用要素の非表示（青フチ、青仕切り線） */
-  .preview-blue-border {
+  /* 3. プレビュー専用要素の非表示（青フチ、青仕切り線、編集オーバーレイ） */
+  .preview-blue-border,
+  .card-edit-overlay {
     display: none !important;
     opacity: 0 !important;
     visibility: hidden !important;

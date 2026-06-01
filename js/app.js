@@ -43,6 +43,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // ズーム用の状態変数
   let currentZoom = 1.0;
 
+  // --- 状態管理変数 (一括印刷・個別編集用) ---
+  const batchData = { names: [], memos: [], prices: [] };
+  let currentEditingIndex = null;
+
   // ==========================================================================
   // 1. 初期設定 & 作成日自動設定
   // ==========================================================================
@@ -264,6 +268,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const manualPanelCard = document.getElementById('manual-panel-card');
     const batchCountVal = document.getElementById('batch-count-val');
 
+    // 状態管理変数に保存 (手動編集からの復帰や反映のために使用)
+    batchData.names = names;
+    batchData.memos = memos;
+    batchData.prices = prices;
+
     // 左側UIの切り替え（手動フォームを非表示にし、一括メッセージを表示）
     if (batchPanelCard && manualPanelCard) {
       batchPanelCard.style.display = 'block';
@@ -320,8 +329,24 @@ document.addEventListener('DOMContentLoaded', () => {
       // 日付
       if (cardDate) cardDate.textContent = formattedDate;
 
+      // 1枚のハガキを包むラッパーを生成（個別編集ボタンのホバー表示のため）
+      const cardWrapper = document.createElement('div');
+      cardWrapper.className = 'postcard-wrapper';
+
+      // 個別編集ボタンのオーバーレイを動的に生成
+      const editOverlay = document.createElement('div');
+      editOverlay.className = 'card-edit-overlay no-print';
+      editOverlay.innerHTML = `
+        <button type="button" class="btn-card-edit" data-index="${index}">
+          ✏️ このカードを個別に編集
+        </button>
+      `;
+
+      cardWrapper.appendChild(card);
+      cardWrapper.appendChild(editOverlay);
+
       // プレビューコンテナへ追加
-      postcardScaleContainer.appendChild(card);
+      postcardScaleContainer.appendChild(cardWrapper);
 
       // 追加した各カードに対して、フォントのオートフィットを個別に実行
       if (cardName && rowTitle) {
@@ -482,6 +507,103 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ==========================================================================
+  // 【一括編集】個別カード編集および保存・キャンセル処理
+  // ==========================================================================
+
+  /**
+   * 一括印刷画面で指定したカードの個別編集を開始する
+   * @param {number} index - 編集対象カードのインデックス
+   */
+  function startIndividualEdit(index) {
+    currentEditingIndex = index;
+
+    // 1. 選択されたカードのデータを入力量フォームにセット
+    inputName.value = batchData.names[index] || '';
+    inputMemo.value = batchData.memos[index] || '';
+    
+    const rawPrice = (batchData.prices[index] || '').replace(/[^\d]/g, '');
+    inputPrice.value = rawPrice ? Number(rawPrice).toLocaleString() : '';
+    
+    // 文字カウンターの更新
+    nameCounter.textContent = `${inputName.value.length}文字`;
+    memoCounter.textContent = `${inputMemo.value.length}文字`;
+
+    // 2. プレビュー表示を手動用に更新
+    cardNameText.textContent = inputName.value || '商品名がここに入ります';
+    cardMemoText.textContent = inputMemo.value || '備考がここに入ります';
+    cardPriceText.textContent = inputPrice.value ? `￥${inputPrice.value}` : '￥0';
+
+    // 3. 表示UIの切り替え
+    const batchPanelCard = document.getElementById('batch-panel-card');
+    const manualPanelCard = document.getElementById('manual-panel-card');
+    const batchEditActions = document.getElementById('batch-edit-actions');
+    
+    if (batchPanelCard && manualPanelCard) {
+      batchPanelCard.style.display = 'none';
+      manualPanelCard.style.display = 'block';
+    }
+    if (batchEditActions) {
+      batchEditActions.style.display = 'flex';
+    }
+
+    // 4. 右側プレビューエリアを一括表示（複数枚）から単体プレビュー（テンプレート）に一時変更
+    postcardScaleContainer.innerHTML = '';
+    postcardScaleContainer.appendChild(postcardPreview);
+    
+    // スケールを通常の手動サイズにフィットさせる
+    autoFitZoom();
+
+    // フォントサイズの自動調整をトリガー
+    triggerTextAutofit();
+  }
+
+  // 一括プレビュー内の編集ボタンクリックイベント（デリゲーション）
+  if (postcardScaleContainer) {
+    postcardScaleContainer.addEventListener('click', (e) => {
+      const editBtn = e.target.closest('.btn-card-edit');
+      if (editBtn) {
+        const index = parseInt(editBtn.dataset.index, 10);
+        startIndividualEdit(index);
+      }
+    });
+  }
+
+  // 編集内容を一括リストに反映して戻るボタン
+  const btnSaveToBatch = document.getElementById('btn-save-to-batch');
+  if (btnSaveToBatch) {
+    btnSaveToBatch.addEventListener('click', () => {
+      if (currentEditingIndex !== null) {
+        // 入力フォームの最新値を一括データに反映
+        batchData.names[currentEditingIndex] = inputName.value.trim();
+        batchData.memos[currentEditingIndex] = inputMemo.value.trim();
+        batchData.prices[currentEditingIndex] = inputPrice.value.replace(/[^\d]/g, '');
+        
+        currentEditingIndex = null;
+        
+        // 復帰用アクションエリアを隠す
+        document.getElementById('batch-edit-actions').style.display = 'none';
+        
+        // 更新されたデータで再度一括印刷プレビューをレンダリング
+        setupBatchPrintMode(batchData.names, batchData.memos, batchData.prices);
+      }
+    });
+  }
+
+  // 変更を破棄して戻るボタン
+  const btnCancelToBatch = document.getElementById('btn-cancel-to-batch');
+  if (btnCancelToBatch) {
+    btnCancelToBatch.addEventListener('click', () => {
+      currentEditingIndex = null;
+      
+      // 復帰用アクションエリアを隠す
+      document.getElementById('batch-edit-actions').style.display = 'none';
+      
+      // 元のデータのままで再度一括印刷プレビューをレンダリング
+      setupBatchPrintMode(batchData.names, batchData.memos, batchData.prices);
+    });
+  }
+
+  // ==========================================================================================================
   // アプリ起動処理の実行
   // ==========================================================================
   
