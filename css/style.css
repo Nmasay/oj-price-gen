@@ -593,21 +593,21 @@ body {
   transform: translateY(-2px);
 }
 
-/* 個別編集オーバーレイ */
+/* 個別編集オーバーレイ (プレビューカードの右上外に配置) */
 .card-edit-overlay {
   position: absolute;
-  top: 5mm;
-  right: 5mm;
+  top: -6mm;
+  right: -6mm;
   z-index: 20;
   opacity: 0;
-  transition: opacity 0.25s ease, transform 0.25s ease;
+  transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: auto;
-  transform: translateY(5px);
+  transform: translate(4px, -4px) scale(0.95);
 }
 
 .postcard-wrapper:hover .card-edit-overlay {
   opacity: 1;
-  transform: translateY(0);
+  transform: translate(0, 0) scale(1);
 }
 
 /* 編集ボタンのプレミアムデザイン */
