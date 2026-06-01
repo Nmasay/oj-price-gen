@@ -412,7 +412,7 @@ body {
 
 .row-title .text-fit-container {
   width: 100%;
-  font-family: 'Noto Sans JP', sans-serif;
+  font-family: 'Inter', 'Noto Sans JP', sans-serif; /* 金額と同系統のスマートで最高峰なフォントシステム */
   font-weight: 900;
   color: var(--print-color-black);
   line-height: 1.2;
@@ -465,7 +465,7 @@ body {
 
 .row-memo .text-fit-container {
   width: 100%;
-  font-family: 'Noto Sans JP', sans-serif;
+  font-family: 'Inter', 'Noto Sans JP', sans-serif; /* 金額と同系統のスマートで最高峰なフォントシステム */
   font-weight: 700;
   color: var(--print-color-blue); /* 備考は青色 */
   line-height: 1.35;
@@ -545,7 +545,7 @@ body {
 
 /* 作成日 (YYYY/M/D) */
 .card-date {
-  font-family: 'Outfit', 'Noto Sans JP', sans-serif;
+  font-family: 'Inter', 'Noto Sans JP', sans-serif; /* 金額と同系統のスマートで最高峰なフォントシステム */
   font-weight: 500;
   font-size: 8.5pt;
   color: var(--print-color-black);
