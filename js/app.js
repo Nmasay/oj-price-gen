@@ -390,8 +390,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // 複数カードがあるため、全体像が見やすいようにズーム倍率を少し引きにする
     setTimeout(() => {
       const wrapperWidth = document.querySelector('.preview-wrapper').clientWidth;
-      const fitScale = (wrapperWidth * 0.8) / 560; // 560pxはハガキの実寸幅
-      applyZoom(Math.max(0.4, Math.min(fitScale, 0.7))); // 40%〜70%に制限して見やすく
+      const fitScale = (wrapperWidth * 0.88) / 560; // 88%の幅に綺麗に収めてより大きく表示
+      applyZoom(Math.max(0.55, Math.min(fitScale, 0.95))); // 55%〜95%の範囲で拡大（従来の上限70%から大幅に拡大）
     }, 150);
   }
 
