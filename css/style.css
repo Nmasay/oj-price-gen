@@ -497,15 +497,40 @@ body {
   line-height: 1;
 }
 
-/* 作成日 (右下隅, YYYY/M/D) */
-.card-date {
+/* 右下フッターエリア (QRコードと作成日を横並びに配置) */
+.card-footer-right {
   position: absolute;
-  right: 4mm;
+  right: 4.5mm;
   bottom: 2.5mm;
+  display: flex;
+  align-items: flex-end; /* 下揃え */
+  gap: 3mm; /* QRコードと日付の間の余白 */
+  z-index: 15;
+}
+
+/* QRコード描画コンテナ (実寸13mm x 13mmで配置) */
+.qr-code-container {
+  width: 13mm;
+  height: 13mm;
+  background-color: #ffffff; /* スマホスキャンを保証するための白背景 */
+  padding: 0.8mm; /* QRコード周囲の保護用白い余白 */
+  box-sizing: border-box;
+  display: none; /* 初期状態やデータがない場合は非表示 */
+}
+
+.qr-code-container canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+/* 作成日 (YYYY/M/D) */
+.card-date {
   font-family: 'Outfit', 'Noto Sans JP', sans-serif;
   font-weight: 500;
   font-size: 8.5pt;
   color: var(--print-color-black);
+  line-height: 1;
 }
 
 /* ==========================================================================
@@ -774,6 +799,12 @@ body {
   .text-price,
   .card-date {
     color: var(--print-color-black) !important;
+  }
+
+  .qr-code-container {
+    background-color: #ffffff !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
   .text-new {

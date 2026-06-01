@@ -109,6 +109,12 @@
               </div>
             </div>
 
+            <!-- 商品詳細URL (QRコード用) -->
+            <div class="form-group">
+              <label for="input-qr-url">商品詳細URL (QRコード化)</label>
+              <input type="text" id="input-qr-url">
+            </div>
+
             <!-- 作成日 -->
             <div class="form-group">
               <label for="input-date">作成日</label>
@@ -177,8 +183,11 @@
                   <span class="text-price" id="card-price-text">￥0</span>
                 </div>
 
-                <!-- 作成日 (右下隅, YYYY/M/D) -->
-                <div class="card-date" id="card-date-text">2026/5/31</div>
+                <!-- 作成日 & QRコードエリア (右下隅, YYYY/M/D) -->
+                <div class="card-footer-right">
+                  <div class="qr-code-container" id="card-qr-code"></div>
+                  <div class="card-date" id="card-date-text">2026/5/31</div>
+                </div>
               </div>
             </div>
           </div>

@@ -2,6 +2,8 @@
    プレミアム・プライスカード・ジェネレーター JS (GitHub Pages版)
    ========================================================================== */
 
+import QRCode from 'qrcode';
+
 document.addEventListener('DOMContentLoaded', () => {
   // --- DOM要素の取得 ---
   const inputName = document.getElementById('input-name');
@@ -22,6 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const cardMemoText = document.getElementById('card-memo-text');
   const cardPriceText = document.getElementById('card-price-text');
   const cardDateText = document.getElementById('card-date-text');
+  const cardQrCode = document.getElementById('card-qr-code');
 
   const nameCounter = document.getElementById('name-counter');
   const memoCounter = document.getElementById('memo-counter');
@@ -48,6 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
     names: [],
     memos: [],
     prices: [],
+    qrs: [],
     titleAutos: [], // 各ハガキのタイトル自動調整ON/OFF
     titleSizes: [], // 各ハガキのタイトルフォントサイズ (px)
     memoAutos: [],  // 各ハガキの備考自動調整ON/OFF
@@ -144,6 +148,44 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  /**
+   * 指定したコンテナにQRコードを Canvas 形式で描画する共通関数
+   * @param {HTMLElement} container - QRコードを描画するコンテナ要素
+   * @param {string} text - QRコード化する文字列 (URL)
+   */
+  function generateQRCode(container, text) {
+    if (!container) return;
+    container.innerHTML = '';
+    
+    // データが空または未設定の場合は非表示にして完全スルー
+    if (!text || text.trim() === '') {
+      container.style.display = 'none';
+      return;
+    }
+    
+    // Canvas要素を作成してコンテナに追加
+    const canvas = document.createElement('canvas');
+    container.appendChild(canvas);
+    
+    // qrcodeライブラリを使用してCanvasに描画
+    // margin: 0 は周囲の静音帯を CSS の padding: 0.8mm で制御するため 0 に設定
+    QRCode.toCanvas(canvas, text, {
+      width: 120,
+      margin: 0,
+      color: {
+        dark: '#000000',
+        light: '#ffffff'
+      }
+    }, (error) => {
+      if (error) {
+        console.error('QRコードの生成に失敗しました:', error);
+        container.style.display = 'none';
+      } else {
+        container.style.display = 'block';
+      }
+    });
+  }
+
   // ==========================================================================
   // 3. 入力監視 & リアルタイムバインディング
   // ==========================================================================
@@ -154,6 +196,13 @@ document.addEventListener('DOMContentLoaded', () => {
     cardNameText.textContent = text;
     nameCounter.textContent = `${inputName.value.length}文字`;
     triggerTextAutofit();
+    updateDemoUrl();
+  });
+
+  // 商品詳細URL (QRコード用)
+  inputQrUrl.addEventListener('input', () => {
+    const text = inputQrUrl.value.trim();
+    generateQRCode(cardQrCode, text);
     updateDemoUrl();
   });
 
@@ -221,15 +270,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const namesParam = params.get('names');
     const memosParam = params.get('memos');
     const pricesParam = params.get('prices');
+    const qrsParam = params.get('qrs');
 
     if (namesParam) {
       const namesList = namesParam.split('|');
       const memosList = memosParam ? memosParam.split('|') : [];
       const pricesList = pricesParam ? pricesParam.split('|') : [];
+      const qrsList = qrsParam ? qrsParam.split('|') : [];
 
       // 複数データが渡された場合は一括印刷モードを起動
       if (namesList.length > 1) {
-        setupBatchPrintMode(namesList, memosList, pricesList);
+        setupBatchPrintMode(namesList, memosList, pricesList, qrsList);
         return;
       }
     }
@@ -238,6 +289,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const nameParam = params.get('name') || params.get('names');
     const memoParam = params.get('memo') || params.get('memos');
     const priceParam = params.get('price') || params.get('prices');
+    const qrParam = params.get('qr') || params.get('qrs');
 
     if (nameParam) {
       inputName.value = nameParam;
@@ -260,7 +312,14 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    if (nameParam || memoParam || priceParam) {
+    if (qrParam) {
+      inputQrUrl.value = qrParam;
+      generateQRCode(cardQrCode, qrParam);
+    } else {
+      generateQRCode(cardQrCode, '');
+    }
+
+    if (nameParam || memoParam || priceParam || qrParam) {
       triggerTextAutofit();
     }
   }
@@ -270,8 +329,9 @@ document.addEventListener('DOMContentLoaded', () => {
    * @param {Array<string>} names - 商品名の配列
    * @param {Array<string>} memos - 備考の配列
    * @param {Array<string>} prices - 価格の配列
+   * @param {Array<string>} qrs - 商品詳細URLの配列
    */
-  function setupBatchPrintMode(names, memos, prices) {
+  function setupBatchPrintMode(names, memos, prices, qrs = []) {
     const batchPanelCard = document.getElementById('batch-panel-card');
     const batchResetPanelCard = document.getElementById('batch-reset-panel-card');
     const manualPanelCard = document.getElementById('manual-panel-card');
@@ -281,6 +341,7 @@ document.addEventListener('DOMContentLoaded', () => {
     batchData.names = names;
     batchData.memos = memos;
     batchData.prices = prices;
+    batchData.qrs = qrs;
 
     // 個別フォント自動・手動設定の配列初期化（未設定の場合のみ）
     names.forEach((_, index) => {
@@ -319,12 +380,14 @@ document.addEventListener('DOMContentLoaded', () => {
       const cardMemo = card.querySelector('.row-memo .text-fit-container');
       const cardPrice = card.querySelector('.text-price');
       const cardDate = card.querySelector('.card-date');
+      const cardQr = card.querySelector('.qr-code-container');
 
       // IDの更新（一括内の競合を避けるため）
       if (cardName) cardName.id = `card-name-text-batch-${index}`;
       if (cardMemo) cardMemo.id = `card-memo-text-batch-${index}`;
       if (cardPrice) cardPrice.id = `card-price-text-batch-${index}`;
       if (cardDate) cardDate.id = `card-date-text-batch-${index}`;
+      if (cardQr) cardQr.id = `card-qr-code-batch-${index}`;
 
       const rowTitle = card.querySelector('.row-title');
       const rowMemo = card.querySelector('.row-memo');
@@ -334,6 +397,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // データの流し込み
       if (cardName) cardName.textContent = name;
       if (cardMemo) cardMemo.textContent = memos[index] || '';
+      if (cardQr) generateQRCode(cardQr, qrs[index] || '');
       
       // 価格フォーマット
       if (cardPrice) {
@@ -406,8 +470,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const name = encodeURIComponent(inputName.value.trim() || 'テスト商品');
     const memo = encodeURIComponent(inputMemo.value.trim() || 'テスト備考');
     const price = encodeURIComponent(inputPrice.value.replace(/[^\d]/g, '') || '1000');
+    const qr = encodeURIComponent(inputQrUrl.value.trim());
     
-    const queryString = `?name=${name}&memo=${memo}&price=${price}`;
+    let queryString = `?name=${name}&memo=${memo}&price=${price}`;
+    if (qr) {
+      queryString += `&qr=${qr}`;
+    }
     paramDemoUrl.textContent = queryString;
   }
 
@@ -556,6 +624,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const rawPrice = (batchData.prices[index] || '').replace(/[^\d]/g, '');
     inputPrice.value = rawPrice ? Number(rawPrice).toLocaleString() : '';
     
+    const qrVal = batchData.qrs[index] || '';
+    inputQrUrl.value = qrVal;
+    generateQRCode(cardQrCode, qrVal);
+    
     // 文字カウンターの更新
     nameCounter.textContent = `${inputName.value.length}文字`;
     memoCounter.textContent = `${inputMemo.value.length}文字`;
@@ -632,6 +704,7 @@ document.addEventListener('DOMContentLoaded', () => {
         batchData.names[currentEditingIndex] = inputName.value.trim();
         batchData.memos[currentEditingIndex] = inputMemo.value.trim();
         batchData.prices[currentEditingIndex] = inputPrice.value.replace(/[^\d]/g, '');
+        batchData.qrs[currentEditingIndex] = inputQrUrl.value.trim();
         
         // 個別フォントの調整状態を保存
         batchData.titleAutos[currentEditingIndex] = checkboxAutoFont.checked;
@@ -645,7 +718,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('batch-edit-actions').style.display = 'none';
         
         // 更新されたデータで再度一括印刷プレビューをレンダリング
-        setupBatchPrintMode(batchData.names, batchData.memos, batchData.prices);
+        setupBatchPrintMode(batchData.names, batchData.memos, batchData.prices, batchData.qrs);
       }
     });
   }
@@ -660,7 +733,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('batch-edit-actions').style.display = 'none';
       
       // 元のデータのままで再度一括印刷プレビューをレンダリング
-      setupBatchPrintMode(batchData.names, batchData.memos, batchData.prices);
+      setupBatchPrintMode(batchData.names, batchData.memos, batchData.prices, batchData.qrs);
     });
   }
 
