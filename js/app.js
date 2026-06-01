@@ -238,8 +238,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 商品タイトル
   inputName.addEventListener('input', () => {
-    const text = inputName.value.trim() || '商品名がここに入ります';
-    cardNameText.textContent = text;
+    const text = inputName.value.trim();
+    cardNameText.textContent = text; // 空欄の時は完全に空（白紙）にする
     nameCounter.textContent = `${inputName.value.length}文字`;
     triggerTextAutofit();
     updateDemoUrl();
@@ -706,7 +706,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 2. プレビュー表示を手動用に更新
-    cardNameText.textContent = inputName.value || '商品名がここに入ります';
+    cardNameText.textContent = inputName.value; // 空欄の時は完全に空（白紙）にする
     cardMemoText.textContent = inputMemo.value; // 空欄の時は完全に空（白紙）にする
     cardPriceText.textContent = inputPrice.value ? `￥${inputPrice.value}` : '￥0';
 
