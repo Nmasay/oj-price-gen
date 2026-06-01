@@ -488,11 +488,11 @@ body {
 
 /* 4行目: 金額欄 (高さ25mm, 中央揃え) */
 .text-price {
-  font-family: 'Outfit', 'Noto Sans JP', sans-serif;
-  font-weight: 800;
-  font-size: 78pt; /* 非常に大きく見やすく (52ptから1.5倍に拡大) */
+  font-family: 'Inter', 'Noto Sans JP', sans-serif; /* スマートで数学的に美しいシャープなフォント */
+  font-weight: 600; /* 極太(800)からスマート(600)へ落とし、美しさを両立 */
+  font-size: 74pt;  /* 縦横比を最適化し、文字切れしにくいサイズに微調整 */
   color: var(--print-color-black);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.04em; /* カーニングをキュッと引き締めて高級感を演出 */
   display: inline-block;
   line-height: 1;
 }
