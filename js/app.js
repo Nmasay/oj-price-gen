@@ -6,7 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- DOM要素の取得 ---
   const inputName = document.getElementById('input-name');
   const inputMemo = document.getElementById('input-memo');
-  
+  const inputQrUrl = document.getElementById('input-qr-url');
+
   // フォントサイズコントロール
   const checkboxAutoFont = document.getElementById('checkbox-auto-font');
   const sliderFontSize = document.getElementById('slider-font-size');
