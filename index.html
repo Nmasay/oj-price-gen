@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>プレミアム・プライスカード・ジェネレーター</title>
+  <title>プライスカード・ジェネレーター</title>
   <!-- Google Fonts: Inter (テキスト用), Outfit (見出し・価格用) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -37,22 +37,28 @@
         </div>
 
         <!-- 独立した手動復帰用パネル（誤操作防止のため一括印刷カードの下に配置） -->
-        <div class="panel-card" id="batch-reset-panel-card" style="display: none; margin-top: 1rem; padding: 1.25rem 1.5rem;">
-          <button type="button" class="btn btn-secondary btn-sm" id="btn-reset-manual" style="width: 100%; padding: 0.6rem 1rem; font-weight: 600;">
+        <div class="panel-card" id="batch-reset-panel-card"
+          style="display: none; margin-top: 1rem; padding: 1.25rem 1.5rem;">
+          <button type="button" class="btn btn-secondary btn-sm" id="btn-reset-manual"
+            style="width: 100%; padding: 0.6rem 1rem; font-weight: 600;">
             🔄 単一プライス作成へ戻る
           </button>
         </div>
 
         <div class="panel-card" id="manual-panel-card">
           <!-- 一括編集から個別に編集モードに入ったときのみ表示するコントロール -->
-          <div id="batch-edit-actions" style="display: none; margin-bottom: 1.5rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--border-color); flex-direction: column; gap: 0.6rem;">
-            <div style="font-size: 0.85rem; color: #10b981; font-weight: 700; display: flex; align-items: center; gap: 0.3rem;">
+          <div id="batch-edit-actions"
+            style="display: none; margin-bottom: 1.5rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--border-color); flex-direction: column; gap: 0.6rem;">
+            <div
+              style="font-size: 0.85rem; color: #10b981; font-weight: 700; display: flex; align-items: center; gap: 0.3rem;">
               <span>✏️ 一括リストから個別カードを編集中</span>
             </div>
-            <button type="button" id="btn-save-to-batch" class="btn btn-primary btn-sm" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); width: 100%; color: white; padding: 0.6rem 1rem;">
+            <button type="button" id="btn-save-to-batch" class="btn btn-primary btn-sm"
+              style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); width: 100%; color: white; padding: 0.6rem 1rem;">
               💾 編集内容を一括リストに反映して戻る
             </button>
-            <button type="button" id="btn-cancel-to-batch" class="btn btn-secondary btn-sm" style="width: 100%; padding: 0.6rem 1rem;">
+            <button type="button" id="btn-cancel-to-batch" class="btn btn-secondary btn-sm"
+              style="width: 100%; padding: 0.6rem 1rem;">
               ✕ 変更を破棄して戻る
             </button>
           </div>
