@@ -497,15 +497,35 @@ body {
   line-height: 1;
 }
 
-/* 右下フッターエリア (QRコードと作成日を横並びに配置) */
+/* 右下フッターエリア (QRコードと作成日を縦並びに配置) */
 .card-footer-right {
   position: absolute;
   right: 4.5mm;
   bottom: 2.5mm;
   display: flex;
-  align-items: flex-end; /* 下揃え */
-  gap: 3mm; /* QRコードと日付の間の余白 */
+  flex-direction: column; /* 縦並び */
+  align-items: flex-end; /* 右端にピタッと揃える */
+  gap: 1.5mm; /* QRコードと日付の間の余白 */
   z-index: 15;
+}
+
+/* QRコードラッパー (文字ラベルとQRコンテナを包含) */
+.qr-code-wrapper {
+  display: none; /* 初期状態は非表示 */
+  flex-direction: column;
+  align-items: center; /* ラッパー内は中央揃え */
+  gap: 0.5mm; /* ラベルとQRコードの僅かな隙間 */
+}
+
+/* QRコード上の文字ラベル */
+.qr-label {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-weight: 700;
+  font-size: 5pt; /* 高精細に読める極小プレミアムサイズ */
+  color: var(--print-color-black);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-align: center;
 }
 
 /* QRコード描画コンテナ (実寸13mm x 13mmで配置) */
@@ -515,7 +535,6 @@ body {
   background-color: #ffffff; /* スマホスキャンを保証するための白背景 */
   padding: 0.8mm; /* QRコード周囲の保護用白い余白 */
   box-sizing: border-box;
-  display: none; /* 初期状態やデータがない場合は非表示 */
 }
 
 .qr-code-container canvas {

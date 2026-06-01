@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const cardMemoText = document.getElementById('card-memo-text');
   const cardPriceText = document.getElementById('card-price-text');
   const cardDateText = document.getElementById('card-date-text');
-  const cardQrCode = document.getElementById('card-qr-code');
+  const cardQrCode = document.getElementById('card-qr-wrapper');
 
   const nameCounter = document.getElementById('name-counter');
   const memoCounter = document.getElementById('memo-counter');
@@ -148,17 +148,19 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /**
-   * 指定したコンテナにQRコードを Canvas 形式で描画する共通関数
-   * @param {HTMLElement} container - QRコードを描画するコンテナ要素
+   * 指定したラッパー（「商品詳細」ラベル含む）にQRコードを Canvas 形式で描画する共通関数
+   * @param {HTMLElement} wrapper - QRコードラッパー要素 (.qr-code-wrapper)
    * @param {string} text - QRコード化する文字列 (URL)
    */
-  function generateQRCode(container, text) {
+  function generateQRCode(wrapper, text) {
+    if (!wrapper) return;
+    const container = wrapper.querySelector('.qr-code-container');
     if (!container) return;
     container.innerHTML = '';
     
     // データが空または未設定の場合は非表示にして完全スルー
     if (!text || text.trim() === '') {
-      container.style.display = 'none';
+      wrapper.style.display = 'none';
       return;
     }
     
@@ -178,9 +180,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }, (error) => {
       if (error) {
         console.error('QRコードの生成に失敗しました:', error);
-        container.style.display = 'none';
+        wrapper.style.display = 'none';
       } else {
-        container.style.display = 'block';
+        wrapper.style.display = 'flex'; // 縦並びのflexでラベルと共に表示
       }
     });
   }
@@ -379,14 +381,14 @@ document.addEventListener('DOMContentLoaded', () => {
       const cardMemo = card.querySelector('.row-memo .text-fit-container');
       const cardPrice = card.querySelector('.text-price');
       const cardDate = card.querySelector('.card-date');
-      const cardQr = card.querySelector('.qr-code-container');
+      const cardQr = card.querySelector('.qr-code-wrapper');
 
       // IDの更新（一括内の競合を避けるため）
       if (cardName) cardName.id = `card-name-text-batch-${index}`;
       if (cardMemo) cardMemo.id = `card-memo-text-batch-${index}`;
       if (cardPrice) cardPrice.id = `card-price-text-batch-${index}`;
       if (cardDate) cardDate.id = `card-date-text-batch-${index}`;
-      if (cardQr) cardQr.id = `card-qr-code-batch-${index}`;
+      if (cardQr) cardQr.id = `card-qr-wrapper-batch-${index}`;
 
       const rowTitle = card.querySelector('.row-title');
       const rowMemo = card.querySelector('.row-memo');
