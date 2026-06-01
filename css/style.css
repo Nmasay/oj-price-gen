@@ -94,7 +94,7 @@ body {
   display: grid;
   grid-template-columns: 450px 1fr;
   gap: 2rem;
-  align-items: stretch; /* 左右の高さを強制的に一致させる */
+  align-items: start; /* 左右の強制的な引き伸ばしを解除し、自然な高さを維持 */
 }
 
 @media (max-width: 1024px) {
@@ -109,11 +109,13 @@ body {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  height: 100%; /* 親の高さに合わせる */
+  position: sticky; /* 複数枚のスクロール時にも画面内に留まるプレミアム追従仕様 */
+  top: 2rem;
+  z-index: 10;
 }
 
 .control-panel > .panel-card {
-  flex: 1 1 auto; /* 表示中のパネルが縦に引き伸ばされ高さを揃える */
+  flex: 0 0 auto; /* 高さはコンテンツの自然なサイズに留める */
 }
 
 .panel-card {
