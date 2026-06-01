@@ -723,6 +723,7 @@ body {
   /* 5. 印刷用ハガキ実寸配置 */
   .postcard {
     position: relative !important;
+    display: block !important; /* ブロック化で余白を完全排除 */
     width: 148mm !important;
     height: 100mm !important;
     margin: 0 !important;
@@ -730,15 +731,20 @@ body {
     box-shadow: none !important;
     border: none !important;
     background: transparent !important; /* 紙に印刷されているため背景は透明 */
+    box-sizing: border-box !important;
+    overflow: hidden !important; /* 万が一のはみ出しも完全にカット */
   }
 
   /* 親ラッパーに対して正確に改ページおよび白紙防止を適用 */
   .postcard-wrapper {
     position: relative !important;
+    display: block !important; /* inline-blockの改行隙間(4px)を完全消去 */
     width: 148mm !important;
-    height: 100mm !important;
+    height: 100mm !important; /* 厳密に100mmに統一 */
     margin: 0 !important;
     padding: 0 !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important; /* 1ピクセルのはみ出しも絶対に許さない */
     page-break-inside: avoid !important;
     break-after: page !important; /* 各ハガキの切れ目で正確に改ページ */
     page-break-after: always !important; /* レガシーブラウザ互換 */
