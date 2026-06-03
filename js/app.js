@@ -631,8 +631,176 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ==========================================================================
-  // 6.6. PDF生成処理 (スマホ印刷推奨用)
+  // 6.6. PDF生成処理 (スマホ印刷推奨用 - Canvas直接描画方式)
   // ==========================================================================
+  
+  /**
+   * テキストが指定された幅と高さに収まる最適なフォントサイズを計算する (Canvas用)
+   */
+  function calculateFitFontSize(ctx, text, maxFontPx, maxWidth, maxHeight, fontFace, fontWeight) {
+    let fontSize = maxFontPx;
+    const lines = text.split('\n');
+    
+    while (fontSize > 12) {
+      ctx.font = `${fontWeight} ${fontSize}px ${fontFace}`;
+      let fits = true;
+      let totalHeight = lines.length * fontSize * 1.35; // 行間 1.35
+      
+      if (totalHeight > maxHeight) {
+        fits = false;
+      } else {
+        for (const line of lines) {
+          const metrics = ctx.measureText(line);
+          if (metrics.width > maxWidth) {
+            fits = false;
+            break;
+          }
+        }
+      }
+      
+      if (fits) {
+        break;
+      }
+      fontSize -= 2;
+    }
+    return fontSize;
+  }
+
+  /**
+   * ハガキ1枚分のプライスカードを高解像度Canvasに描画する (非同期)
+   */
+  async function drawCardToCanvas(name, memo, priceText, dateText, qrUrl, titleAuto, titleSize, memoAuto, memoSize) {
+    const canvas = document.createElement('canvas');
+    canvas.width = 1776; // 148mm * 12px/mm (約300dpi)
+    canvas.height = 1200; // 100mm * 12px/mm
+    const ctx = canvas.getContext('2d');
+
+    // 背景のクリア (白)
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // フォントファミリー設定 (ヒラギノ等のシステムフォント優先)
+    const fontTitleFace = "'Inter', 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', sans-serif";
+    const fontMemoFace = "'Inter', 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', sans-serif";
+    const fontPriceFace = "'Inter', 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', sans-serif";
+    const fontDefault = "'Noto Sans JP', 'Hiragino Kaku Gothic ProN', sans-serif";
+
+    // --- 1. 商品タイトルの描画 ---
+    const titleMaxHeight = 260;
+    const titleMaxWidth = 1536; // 1776 - 120(マージン)*2
+    const titleLines = name.split('\n');
+    
+    // スライダーのフォントサイズ (px) を Canvas解像度 (3倍) にスケール
+    let finalTitleSize = titleSize * 3;
+    if (titleAuto) {
+      finalTitleSize = calculateFitFontSize(ctx, name, 144, titleMaxWidth, titleMaxHeight, fontTitleFace, '900');
+    }
+
+    ctx.font = `900 ${finalTitleSize}px ${fontTitleFace}`;
+    ctx.fillStyle = '#111111';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+
+    const titleLineHeight = finalTitleSize * 1.25;
+    const totalTitleHeight = titleLines.length * titleLineHeight;
+    let titleY = 102 + (titleMaxHeight - totalTitleHeight) / 2; // 上部マージン 102px (8.5mm)
+
+    titleLines.forEach(line => {
+      ctx.fillText(line, 888, titleY);
+      titleY += titleLineHeight;
+    });
+
+    // --- 2. 「新品」バッジの描画 ---
+    ctx.font = `900 135px ${fontDefault}`; // 32pt 相当
+    ctx.fillStyle = '#dd2222';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText('新品', 120, 360); // 上部から約 30mm
+
+    // --- 3. 備考欄の描画 ---
+    const memoMaxWidth = 1536;
+    const memoMaxHeight = 192; // 16mm 相当
+    const memoLines = memo.split('\n');
+
+    let finalMemoSize = memoSize * 3;
+    if (memoAuto) {
+      finalMemoSize = calculateFitFontSize(ctx, memo, 60, memoMaxWidth, memoMaxHeight, fontMemoFace, '700');
+    }
+
+    ctx.font = `700 ${finalMemoSize}px ${fontMemoFace}`;
+    ctx.fillStyle = '#0044cc';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+
+    const memoLineHeight = finalMemoSize * 1.35;
+    let memoY = 590; // 上部から約 49mm
+    memoLines.forEach(line => {
+      ctx.fillText(line, 120, memoY);
+      memoY += memoLineHeight;
+    });
+
+    // --- 4. 金額欄 of 描画 ---
+    // カンマ区切りフォーマット
+    const rawPrice = priceText.replace(/[^\d]/g, '');
+    const formattedPrice = rawPrice ? `￥${Number(rawPrice).toLocaleString()}` : '￥0';
+
+    ctx.font = `600 280px ${fontPriceFace}`; // 74pt 相当
+    ctx.fillStyle = '#111111';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText(formattedPrice, 120, 850); // 下部から約 29mm
+
+    // --- 5. QRコードの描画 ---
+    if (qrUrl && !isUrlEmpty(qrUrl)) {
+      const qrCanvas = document.createElement('canvas');
+      try {
+        await new Promise((resolve, reject) => {
+          QRCode.toCanvas(qrCanvas, qrUrl, {
+            width: 240, // 20mm 相当
+            margin: 0,
+            color: {
+              dark: '#000000',
+              light: '#ffffff'
+            }
+          }, (error) => {
+            if (error) reject(error);
+            else resolve();
+          });
+        });
+
+        // 右下に配置 (X=1482px, Y=870px)
+        ctx.drawImage(qrCanvas, 1482, 870, 240, 240);
+
+        // 「商品詳細」ラベルの描画 (QRコードの上部)
+        ctx.font = `700 32px ${fontDefault}`;
+        ctx.fillStyle = '#111111';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        ctx.fillText('商品詳細', 1482 + 120, 870 - 15);
+      } catch (qrError) {
+        console.error('CanvasへのQRコード描画に失敗しました:', qrError);
+      }
+    }
+
+    // --- 6. 日付の描画 ---
+    if (dateText) {
+      // 日付のフォーマット (YYYY-MM-DD から YYYY/M/D へ変換)
+      let displayDate = dateText;
+      if (dateText.includes('-')) {
+        const [y, m, d] = dateText.split('-');
+        displayDate = `${y}/${parseInt(m, 10)}/${parseInt(d, 10)}`;
+      }
+
+      ctx.font = `500 34px ${fontTitleFace}`;
+      ctx.fillStyle = '#111111';
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText(displayDate, 1776 - 54, 1200 - 30); // 右下マージン
+    }
+
+    return canvas;
+  }
+
   const btnGeneratePdf = document.getElementById('btn-generate-pdf');
   if (btnGeneratePdf) {
     btnGeneratePdf.addEventListener('click', async () => {
@@ -640,40 +808,46 @@ document.addEventListener('DOMContentLoaded', () => {
       btnGeneratePdf.disabled = true;
       btnGeneratePdf.innerHTML = '⏳ PDF生成を開始...';
 
-      // 一時的に退避させる変数の定義
-      const originalTransform = postcardScaleContainer.style.transform;
-      const originalZoom = currentZoom;
-      let scrollX = window.scrollX;
-      let scrollY = window.scrollY;
-
       try {
         const batchPanelCard = document.getElementById('batch-panel-card');
         const isBatchMode = batchPanelCard && batchPanelCard.style.display === 'block';
-        let targetPostcards = [];
+        
+        let cards = [];
 
         if (isBatchMode) {
-          targetPostcards = Array.from(postcardScaleContainer.querySelectorAll('.postcard'));
-        } else {
-          const singleCard = document.getElementById('postcard-preview');
-          if (singleCard) {
-            targetPostcards = [singleCard];
+          for (let i = 0; i < batchData.names.length; i++) {
+            cards.push({
+              name: batchData.names[i],
+              memo: batchData.memos[i] || '',
+              price: batchData.prices[i] || '',
+              qrUrl: batchData.qrs[i] || '',
+              date: inputDate.value,
+              titleAuto: batchData.titleAutos[i] !== false,
+              titleSize: batchData.titleSizes[i] || 24,
+              memoAuto: batchData.memoAutos[i] !== false,
+              memoSize: batchData.memoSizes[i] || 12
+            });
           }
+        } else {
+          cards.push({
+            name: inputName.value.trim(),
+            memo: inputMemo.value.trim(),
+            price: inputPrice.value,
+            qrUrl: inputQrUrl.value.trim(),
+            date: inputDate.value,
+            titleAuto: checkboxAutoFont.checked,
+            titleSize: parseFloat(sliderFontSize.value),
+            memoAuto: checkboxAutoFontMemo.checked,
+            memoSize: parseFloat(sliderFontSizeMemo.value)
+          });
         }
 
-        if (targetPostcards.length === 0) {
+        if (cards.length === 0) {
           alert('印刷対象のカードが見つかりません。');
           btnGeneratePdf.disabled = false;
           btnGeneratePdf.innerHTML = originalText;
           return;
         }
-
-        // html2canvasが正しく元の寸法でキャプチャできるよう、一時的にズームスケールを100%（解除）にする
-        postcardScaleContainer.style.transform = 'none';
-        
-        // html2canvasのスクロールバグを防ぐため、一時的にスクロール位置を最上部にリセット
-        scrollX = window.scrollX;
-        scrollY = window.scrollY;
-        window.scrollTo(0, 0);
 
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF({
@@ -684,28 +858,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const isRotate = checkboxPrintRotate ? checkboxPrintRotate.checked : false;
 
-        for (let i = 0; i < targetPostcards.length; i++) {
-          btnGeneratePdf.innerHTML = `⏳ PDF生成中 (${i + 1}/${targetPostcards.length})...`;
-          const postcard = targetPostcards[i];
+        for (let i = 0; i < cards.length; i++) {
+          btnGeneratePdf.innerHTML = `⏳ PDF生成中 (${i + 1}/${cards.length})...`;
+          const card = cards[i];
 
           if (i > 0) {
             doc.addPage([148, 100], 'landscape');
           }
 
-          const canvas = await html2canvas(postcard, {
-            scale: 3, // 高解像度 (印刷品質に十分な 288dpi 相当)
-            useCORS: true,
-            backgroundColor: '#ffffff',
-            scrollX: 0,
-            scrollY: 0,
-            x: 0,
-            y: 0,
-            ignoreElements: (el) => {
-              return el.classList.contains('preview-blue-border') || 
-                     el.classList.contains('preview-divider') || 
-                     el.classList.contains('card-edit-overlay');
-            }
-          });
+          // HTMLレンダリングのズーム・スクロールに一切依存せず、メモリ内の高解像度Canvasに直接描画
+          const canvas = await drawCardToCanvas(
+            card.name,
+            card.memo,
+            card.price,
+            card.date,
+            card.qrUrl,
+            card.titleAuto,
+            card.titleSize,
+            card.memoAuto,
+            card.memoSize
+          );
 
           const imgData = canvas.toDataURL('image/png');
 
@@ -715,10 +887,6 @@ document.addEventListener('DOMContentLoaded', () => {
             doc.addImage(imgData, 'PNG', 0, 0, 148, 100, undefined, 'FAST');
           }
         }
-
-        // スケールとスクロール位置を元の状態に即座に復元
-        postcardScaleContainer.style.transform = originalTransform ? originalTransform : `scale(${originalZoom})`;
-        window.scrollTo(scrollX, scrollY);
 
         btnGeneratePdf.innerHTML = '⏳ ダウンロード準備中...';
         
@@ -738,9 +906,6 @@ document.addEventListener('DOMContentLoaded', () => {
           doc.save(fileName);
         }
       } catch (error) {
-        // エラー発生時も元の状態に確実に復元
-        postcardScaleContainer.style.transform = originalTransform ? originalTransform : `scale(${originalZoom})`;
-        window.scrollTo(scrollX, scrollY);
         console.error('PDFの生成中にエラーが発生しました:', error);
         alert('PDFの生成に失敗しました。エラー: ' + error.message);
       } finally {
