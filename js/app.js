@@ -640,6 +640,12 @@ document.addEventListener('DOMContentLoaded', () => {
       btnGeneratePdf.disabled = true;
       btnGeneratePdf.innerHTML = '⏳ PDF生成を開始...';
 
+      // 一時的に退避させる変数の定義
+      const originalTransform = postcardScaleContainer.style.transform;
+      const originalZoom = currentZoom;
+      let scrollX = window.scrollX;
+      let scrollY = window.scrollY;
+
       try {
         const batchPanelCard = document.getElementById('batch-panel-card');
         const isBatchMode = batchPanelCard && batchPanelCard.style.display === 'block';
@@ -660,6 +666,14 @@ document.addEventListener('DOMContentLoaded', () => {
           btnGeneratePdf.innerHTML = originalText;
           return;
         }
+
+        // html2canvasが正しく元の寸法でキャプチャできるよう、一時的にズームスケールを100%（解除）にする
+        postcardScaleContainer.style.transform = 'none';
+        
+        // html2canvasのスクロールバグを防ぐため、一時的にスクロール位置を最上部にリセット
+        scrollX = window.scrollX;
+        scrollY = window.scrollY;
+        window.scrollTo(0, 0);
 
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF({
@@ -682,6 +696,10 @@ document.addEventListener('DOMContentLoaded', () => {
             scale: 3, // 高解像度 (印刷品質に十分な 288dpi 相当)
             useCORS: true,
             backgroundColor: '#ffffff',
+            scrollX: 0,
+            scrollY: 0,
+            x: 0,
+            y: 0,
             ignoreElements: (el) => {
               return el.classList.contains('preview-blue-border') || 
                      el.classList.contains('preview-divider') || 
@@ -698,16 +716,33 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         }
 
+        // スケールとスクロール位置を元の状態に即座に復元
+        postcardScaleContainer.style.transform = originalTransform ? originalTransform : `scale(${originalZoom})`;
+        window.scrollTo(scrollX, scrollY);
+
         btnGeneratePdf.innerHTML = '⏳ ダウンロード準備中...';
         
         const now = new Date();
         const dateStr = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}`;
         const fileName = `price_cards_${dateStr}.pdf`;
 
-        doc.save(fileName);
+        // iOS (iPhone/iPad/iPod) 判定
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+                      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+        if (isIOS) {
+          const blob = doc.output('blob');
+          const blobUrl = URL.createObjectURL(blob);
+          window.location.href = blobUrl;
+        } else {
+          doc.save(fileName);
+        }
       } catch (error) {
+        // エラー発生時も元の状態に確実に復元
+        postcardScaleContainer.style.transform = originalTransform ? originalTransform : `scale(${originalZoom})`;
+        window.scrollTo(scrollX, scrollY);
         console.error('PDFの生成中にエラーが発生しました:', error);
-        alert('PDFの生成に失敗しました。時間をおいて再度お試しください。');
+        alert('PDFの生成に失敗しました。エラー: ' + error.message);
       } finally {
         btnGeneratePdf.disabled = false;
         btnGeneratePdf.innerHTML = originalText;
