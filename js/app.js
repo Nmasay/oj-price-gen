@@ -631,6 +631,91 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ==========================================================================
+  // 6.6. PDF生成処理 (スマホ印刷推奨用)
+  // ==========================================================================
+  const btnGeneratePdf = document.getElementById('btn-generate-pdf');
+  if (btnGeneratePdf) {
+    btnGeneratePdf.addEventListener('click', async () => {
+      const originalText = btnGeneratePdf.innerHTML;
+      btnGeneratePdf.disabled = true;
+      btnGeneratePdf.innerHTML = '⏳ PDF生成を開始...';
+
+      try {
+        const batchPanelCard = document.getElementById('batch-panel-card');
+        const isBatchMode = batchPanelCard && batchPanelCard.style.display === 'block';
+        let targetPostcards = [];
+
+        if (isBatchMode) {
+          targetPostcards = Array.from(postcardScaleContainer.querySelectorAll('.postcard'));
+        } else {
+          const singleCard = document.getElementById('postcard-preview');
+          if (singleCard) {
+            targetPostcards = [singleCard];
+          }
+        }
+
+        if (targetPostcards.length === 0) {
+          alert('印刷対象のカードが見つかりません。');
+          btnGeneratePdf.disabled = false;
+          btnGeneratePdf.innerHTML = originalText;
+          return;
+        }
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({
+          orientation: 'landscape',
+          unit: 'mm',
+          format: [148, 100]
+        });
+
+        const isRotate = checkboxPrintRotate ? checkboxPrintRotate.checked : false;
+
+        for (let i = 0; i < targetPostcards.length; i++) {
+          btnGeneratePdf.innerHTML = `⏳ PDF生成中 (${i + 1}/${targetPostcards.length})...`;
+          const postcard = targetPostcards[i];
+
+          if (i > 0) {
+            doc.addPage([148, 100], 'landscape');
+          }
+
+          const canvas = await html2canvas(postcard, {
+            scale: 3, // 高解像度 (印刷品質に十分な 288dpi 相当)
+            useCORS: true,
+            backgroundColor: '#ffffff',
+            ignoreElements: (el) => {
+              return el.classList.contains('preview-blue-border') || 
+                     el.classList.contains('preview-divider') || 
+                     el.classList.contains('card-edit-overlay');
+            }
+          });
+
+          const imgData = canvas.toDataURL('image/png');
+
+          if (isRotate) {
+            doc.addImage(imgData, 'PNG', 148, 100, 148, 100, undefined, 'FAST', 180);
+          } else {
+            doc.addImage(imgData, 'PNG', 0, 0, 148, 100, undefined, 'FAST');
+          }
+        }
+
+        btnGeneratePdf.innerHTML = '⏳ ダウンロード準備中...';
+        
+        const now = new Date();
+        const dateStr = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}`;
+        const fileName = `price_cards_${dateStr}.pdf`;
+
+        doc.save(fileName);
+      } catch (error) {
+        console.error('PDFの生成中にエラーが発生しました:', error);
+        alert('PDFの生成に失敗しました。時間をおいて再度お試しください。');
+      } finally {
+        btnGeneratePdf.disabled = false;
+        btnGeneratePdf.innerHTML = originalText;
+      }
+    });
+  }
+
+  // ==========================================================================
   // 7. フォントサイズ手動調整 (トグルとスライダー)
   // ==========================================================================
 
