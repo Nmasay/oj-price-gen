@@ -836,6 +836,12 @@ body {
   .row-memo .text-fit-container {
     color: var(--print-color-blue) !important; /* 備考の青印刷を保証 */
   }
+
+  /* 印刷時に180度回転する（カードのサイズやレイアウトを維持したまま、中身だけを回転） */
+  .print-rotate-180 .postcard {
+    transform: rotate(180deg) !important;
+    transform-origin: center center !important;
+  }
 }
 
 /* ==========================================================================

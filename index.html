@@ -146,7 +146,14 @@
           <button type="button" class="btn btn-primary btn-lg" id="btn-print" style="max-width: 100%;">
             <span class="btn-icon-print">🖨️</span> プライスカードを印刷する
           </button>
-          <p class="print-note">※ 用紙サイズを「ハガキ」、方向を「横」、余白「なし」に設定してください。</p>
+          <div class="toggle-control print-rotation-toggle" style="margin-top: 0.5rem; justify-content: center; gap: 0.5rem;">
+            <label class="switch">
+              <input type="checkbox" id="checkbox-print-rotate" checked>
+              <span class="slider-round"></span>
+            </label>
+            <span class="toggle-label" style="font-weight: 600; font-size: 0.85rem;">180°回転</span>
+          </div>
+          <p class="print-note" style="margin-top: 0.5rem;">※ 用紙サイズを「ハガキ」、方向を「横」、余白「なし」に設定してください。</p>
         </div>
 
         <div class="preview-wrapper">

@@ -595,6 +595,34 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ==========================================================================
+  // 6.5. 印刷用180度回転トグル設定
+  // ==========================================================================
+  const checkboxPrintRotate = document.getElementById('checkbox-print-rotate');
+  if (checkboxPrintRotate) {
+    // 初期状態の設定（localStorageから復元、デフォルトはON）
+    const savedRotate = localStorage.getItem('printRotate180');
+    const isRotate = (savedRotate === null || savedRotate === 'true');
+    
+    checkboxPrintRotate.checked = isRotate;
+    if (isRotate) {
+      document.body.classList.add('print-rotate-180');
+    } else {
+      document.body.classList.remove('print-rotate-180');
+    }
+
+    // 状態変更時のイベントリスナー
+    checkboxPrintRotate.addEventListener('change', (e) => {
+      const isChecked = e.target.checked;
+      if (isChecked) {
+        document.body.classList.add('print-rotate-180');
+      } else {
+        document.body.classList.remove('print-rotate-180');
+      }
+      localStorage.setItem('printRotate180', isChecked ? 'true' : 'false');
+    });
+  }
+
+  // ==========================================================================
   // 7. フォントサイズ手動調整 (トグルとスライダー)
   // ==========================================================================
 
