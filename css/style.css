@@ -409,7 +409,7 @@ body {
   height: 25mm;
   justify-content: center;
   text-align: center;
-  padding: 3.5mm 5mm 0; /* 上部に3.5mmの余白を設け、飾りフチから文字をスマートに離して配置 */
+  padding: 8.5mm 5mm 0; /* 上部に8.5mmの余白を設け、飾りフチから文字をスマートに離して配置（5mm下げた） */
 }
 
 .row-title .text-fit-container {
@@ -438,6 +438,7 @@ body {
 .row-new {
   height: 20mm;
   justify-content: flex-start;
+  padding-top: 5mm; /* 新品を5mm下にさげる */
   padding-left: 10mm; /* 紙の仕切り線に揃えるための左余白 */
 }
 
@@ -462,7 +463,7 @@ body {
 .row-memo {
   height: 16mm;
   justify-content: flex-start;
-  padding: 0 10mm;
+  padding: 4mm 10mm 0; /* 備考を4mm下にさげる */
 }
 
 .row-memo .text-fit-container {
@@ -523,17 +524,17 @@ body {
 .qr-label {
   font-family: 'Noto Sans JP', sans-serif;
   font-weight: 700;
-  font-size: 5pt; /* 高精細に読める極小プレミアムサイズ */
+  font-size: 8pt; /* 20mmQRコードに合わせたサイズに変更 */
   color: var(--print-color-black);
   line-height: 1;
   letter-spacing: 0.02em;
   text-align: center;
 }
 
-/* QRコード描画コンテナ (実寸13mm x 13mmで配置) */
+/* QRコード描画コンテナ (実寸20mm x 20mmで配置) */
 .qr-code-container {
-  width: 13mm;
-  height: 13mm;
+  width: 20mm;
+  height: 20mm;
   background-color: #ffffff; /* スマホスキャンを保証するための白背景 */
   padding: 0.8mm; /* QRコード周囲の保護用白い余白 */
   box-sizing: border-box;

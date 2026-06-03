@@ -216,7 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // qrcodeライブラリを使用してCanvasに描画
     // margin: 0 は周囲の静音帯を CSS の padding: 0.8mm で制御するため 0 に設定
     QRCode.toCanvas(canvas, text, {
-      width: 120,
+      width: 200,
       margin: 0,
       color: {
         dark: '#000000',
