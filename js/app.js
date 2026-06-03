@@ -595,11 +595,25 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ==========================================================================
-  // 6. 印刷処理
+  // 6. 印刷処理 (モバイル時はPDF生成・共有、PC時はブラウザ標準印刷)
   // ==========================================================================
 
+  /**
+   * モバイル判定（iOSまたは画面幅768px以下）
+   */
+  function isMobileUser() {
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+                  (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    const isSmallScreen = window.innerWidth <= 768;
+    return isIOS || isSmallScreen;
+  }
+
   btnPrint.addEventListener('click', () => {
-    window.print();
+    if (isMobileUser()) {
+      handlePrintAction(btnPrint);
+    } else {
+      window.print();
+    }
   });
 
   // ==========================================================================
@@ -807,115 +821,134 @@ document.addEventListener('DOMContentLoaded', () => {
     return canvas;
   }
 
-  const btnGeneratePdf = document.getElementById('btn-generate-pdf');
-  if (btnGeneratePdf) {
-    btnGeneratePdf.addEventListener('click', async () => {
-      const originalText = btnGeneratePdf.innerHTML;
-      btnGeneratePdf.disabled = true;
-      btnGeneratePdf.innerHTML = '⏳ PDF生成を開始...';
+  /**
+   * PDF作成および印刷・共有処理のハンドラ (モバイル・PC自動判別)
+   */
+  async function handlePrintAction(buttonElement) {
+    const originalText = buttonElement.innerHTML;
+    buttonElement.disabled = true;
+    buttonElement.innerHTML = '⏳ PDF生成を開始...';
 
-      try {
-        const batchPanelCard = document.getElementById('batch-panel-card');
-        const isBatchMode = batchPanelCard && batchPanelCard.style.display === 'block';
-        
-        let cards = [];
+    try {
+      const batchPanelCard = document.getElementById('batch-panel-card');
+      const isBatchMode = batchPanelCard && batchPanelCard.style.display === 'block';
+      
+      let cards = [];
 
-        if (isBatchMode) {
-          for (let i = 0; i < batchData.names.length; i++) {
-            cards.push({
-              name: batchData.names[i],
-              memo: batchData.memos[i] || '',
-              price: batchData.prices[i] || '',
-              qrUrl: batchData.qrs[i] || '',
-              date: inputDate.value,
-              titleAuto: batchData.titleAutos[i] !== false,
-              titleSize: batchData.titleSizes[i] || 24,
-              memoAuto: batchData.memoAutos[i] !== false,
-              memoSize: batchData.memoSizes[i] || 12
-            });
-          }
-        } else {
+      if (isBatchMode) {
+        for (let i = 0; i < batchData.names.length; i++) {
           cards.push({
-            name: inputName.value.trim(),
-            memo: inputMemo.value.trim(),
-            price: inputPrice.value,
-            qrUrl: inputQrUrl.value.trim(),
+            name: batchData.names[i],
+            memo: batchData.memos[i] || '',
+            price: batchData.prices[i] || '',
+            qrUrl: batchData.qrs[i] || '',
             date: inputDate.value,
-            titleAuto: checkboxAutoFont.checked,
-            titleSize: parseFloat(sliderFontSize.value),
-            memoAuto: checkboxAutoFontMemo.checked,
-            memoSize: parseFloat(sliderFontSizeMemo.value)
+            titleAuto: batchData.titleAutos[i] !== false,
+            titleSize: batchData.titleSizes[i] || 24,
+            memoAuto: batchData.memoAutos[i] !== false,
+            memoSize: batchData.memoSizes[i] || 12
           });
         }
-
-        if (cards.length === 0) {
-          alert('印刷対象のカードが見つかりません。');
-          btnGeneratePdf.disabled = false;
-          btnGeneratePdf.innerHTML = originalText;
-          return;
-        }
-
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF({
-          orientation: 'landscape',
-          unit: 'mm',
-          format: [148, 100]
+      } else {
+        cards.push({
+          name: inputName.value.trim(),
+          memo: inputMemo.value.trim(),
+          price: inputPrice.value,
+          qrUrl: inputQrUrl.value.trim(),
+          date: inputDate.value,
+          titleAuto: checkboxAutoFont.checked,
+          titleSize: parseFloat(sliderFontSize.value),
+          memoAuto: checkboxAutoFontMemo.checked,
+          memoSize: parseFloat(sliderFontSizeMemo.value)
         });
+      }
 
-        const isRotate = checkboxPrintRotate ? checkboxPrintRotate.checked : false;
+      if (cards.length === 0) {
+        alert('印刷対象のカードが見つかりません。');
+        buttonElement.disabled = false;
+        buttonElement.innerHTML = originalText;
+        return;
+      }
 
-        for (let i = 0; i < cards.length; i++) {
-          btnGeneratePdf.innerHTML = `⏳ PDF生成中 (${i + 1}/${cards.length})...`;
-          const card = cards[i];
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({
+        orientation: 'landscape',
+        unit: 'mm',
+        format: [148, 100]
+      });
 
-          if (i > 0) {
-            doc.addPage([148, 100], 'landscape');
-          }
+      const isRotate = checkboxPrintRotate ? checkboxPrintRotate.checked : false;
 
-          // HTMLレンダリングのズーム・スクロールに一切依存せず、メモリ内の高解像度Canvasに直接描画
-          const canvas = await drawCardToCanvas(
-            card.name,
-            card.memo,
-            card.price,
-            card.date,
-            card.qrUrl,
-            card.titleAuto,
-            card.titleSize,
-            card.memoAuto,
-            card.memoSize,
-            isRotate
-          );
+      for (let i = 0; i < cards.length; i++) {
+        buttonElement.innerHTML = `⏳ PDF生成中 (${i + 1}/${cards.length})...`;
+        const card = cards[i];
 
-          const imgData = canvas.toDataURL('image/png');
-
-          doc.addImage(imgData, 'PNG', 0, 0, 148, 100, undefined, 'FAST');
+        if (i > 0) {
+          doc.addPage([148, 100], 'landscape');
         }
 
-        btnGeneratePdf.innerHTML = '⏳ ダウンロード準備中...';
+        // HTMLレンダリングのズーム・スクロールに一切依存せず、メモリ内の高解像度Canvasに直接描画
+        const canvas = await drawCardToCanvas(
+          card.name,
+          card.memo,
+          card.price,
+          card.date,
+          card.qrUrl,
+          card.titleAuto,
+          card.titleSize,
+          card.memoAuto,
+          card.memoSize,
+          isRotate
+        );
+
+        const imgData = canvas.toDataURL('image/png');
+        doc.addImage(imgData, 'PNG', 0, 0, 148, 100, undefined, 'FAST');
+      }
+
+      const now = new Date();
+      const dateStr = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}`;
+      const fileName = `price_cards_${dateStr}.pdf`;
+
+      const isMobile = isMobileUser();
+      const blob = doc.output('blob');
+
+      if (isMobile) {
+        buttonElement.innerHTML = '⏳ 共有画面を起動中...';
+        const file = new File([blob], fileName, { type: 'application/pdf' });
         
-        const now = new Date();
-        const dateStr = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}`;
-        const fileName = `price_cards_${dateStr}.pdf`;
-
-        // iOS (iPhone/iPad/iPod) 判定
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
-                      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-
-        if (isIOS) {
-          const blob = doc.output('blob');
+        // Web Share API による共有シートのポップアップを試みる
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          try {
+            await navigator.share({
+              files: [file],
+              title: 'プライスカード印刷',
+              text: '生成されたハガキサイズプライスカードのPDFです。'
+            });
+          } catch (shareError) {
+            // AbortError (ユーザーキャンセル) 以外の共有エラー時はプレビュー画面に遷移
+            if (shareError.name !== 'AbortError') {
+              console.error('共有エラー:', shareError);
+              const blobUrl = URL.createObjectURL(blob);
+              window.location.href = blobUrl;
+            }
+          }
+        } else {
+          // Web Share API 非対応ブラウザ用フォールバック
           const blobUrl = URL.createObjectURL(blob);
           window.location.href = blobUrl;
-        } else {
-          doc.save(fileName);
         }
-      } catch (error) {
-        console.error('PDFの生成中にエラーが発生しました:', error);
-        alert('PDFの生成に失敗しました。エラー: ' + error.message);
-      } finally {
-        btnGeneratePdf.disabled = false;
-        btnGeneratePdf.innerHTML = originalText;
+      } else {
+        // PC等の場合は通常通り直接ダウンロード
+        buttonElement.innerHTML = '⏳ ダウンロード準備中...';
+        doc.save(fileName);
       }
-    });
+    } catch (error) {
+      console.error('PDFの生成中にエラーが発生しました:', error);
+      alert('PDFの生成に失敗しました。エラー: ' + error.message);
+    } finally {
+      buttonElement.disabled = false;
+      buttonElement.innerHTML = originalText;
+    }
   }
 
   // ==========================================================================
