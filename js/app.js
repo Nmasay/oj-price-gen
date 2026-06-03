@@ -569,13 +569,21 @@ document.addEventListener('DOMContentLoaded', () => {
    * 画面幅に合わせてプレビューを自動フィットさせる
    */
   function autoFitZoom() {
-    const wrapperWidth = document.querySelector('.preview-wrapper').clientWidth;
+    const wrapper = document.querySelector('.preview-wrapper');
+    if (!wrapper) return;
+
+    // clientWidth が親の押し広げ等で異常に大きくなるのを防ぐため、画面幅からの物理的な上限を設ける
+    const isMobile = window.innerWidth <= 768;
+    const maxWrapperWidth = window.innerWidth - (isMobile ? 24 : 64);
+    const wrapperWidth = Math.min(wrapper.clientWidth || maxWrapperWidth, maxWrapperWidth);
+
     // ハガキの実寸幅は148mm = 約560px（96dpi換算）
     // JavaScriptで安全に取得するために postcard.offsetWidth を用いる
     const cardWidth = postcardPreview.offsetWidth || 560;
     
-    // 余白を考慮して 90% の幅にフィットさせる
-    const fitScale = (wrapperWidth * 0.85) / cardWidth;
+    // 余白を考慮してフィットさせる (モバイル時はよりタイトに 92% にフィットさせる)
+    const paddingRatio = isMobile ? 0.92 : 0.85;
+    const fitScale = (wrapperWidth * paddingRatio) / cardWidth;
     applyZoom(fitScale);
   }
 
