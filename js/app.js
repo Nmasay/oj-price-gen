@@ -669,7 +669,7 @@ document.addEventListener('DOMContentLoaded', () => {
   /**
    * ハガキ1枚分のプライスカードを高解像度Canvasに描画する (非同期)
    */
-  async function drawCardToCanvas(name, memo, priceText, dateText, qrUrl, titleAuto, titleSize, memoAuto, memoSize) {
+  async function drawCardToCanvas(name, memo, priceText, dateText, qrUrl, titleAuto, titleSize, memoAuto, memoSize, isRotate) {
     const canvas = document.createElement('canvas');
     canvas.width = 1776; // 148mm * 12px/mm (約300dpi)
     canvas.height = 1200; // 100mm * 12px/mm
@@ -678,6 +678,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // 背景のクリア (白)
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // 180度回転の適用 (Canvasの座標系自体を180度回転・移動)
+    if (isRotate) {
+      ctx.translate(1776, 1200);
+      ctx.rotate(Math.PI);
+    }
 
     // フォントファミリー設定 (ヒラギノ等のシステムフォント優先)
     const fontTitleFace = "'Inter', 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', sans-serif";
@@ -876,16 +882,13 @@ document.addEventListener('DOMContentLoaded', () => {
             card.titleAuto,
             card.titleSize,
             card.memoAuto,
-            card.memoSize
+            card.memoSize,
+            isRotate
           );
 
           const imgData = canvas.toDataURL('image/png');
 
-          if (isRotate) {
-            doc.addImage(imgData, 'PNG', 148, 100, 148, 100, undefined, 'FAST', 180);
-          } else {
-            doc.addImage(imgData, 'PNG', 0, 0, 148, 100, undefined, 'FAST');
-          }
+          doc.addImage(imgData, 'PNG', 0, 0, 148, 100, undefined, 'FAST');
         }
 
         btnGeneratePdf.innerHTML = '⏳ ダウンロード準備中...';
