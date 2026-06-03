@@ -504,7 +504,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
       const wrapperWidth = document.querySelector('.preview-wrapper').clientWidth;
       const fitScale = (wrapperWidth * 0.88) / 560; // 88%の幅に綺麗に収めてより大きく表示
-      applyZoom(Math.max(0.55, Math.min(fitScale, 0.95))); // 55%〜95%の範囲で拡大（従来の上限70%から大幅に拡大）
+      applyZoom(Math.max(0.4, Math.min(fitScale, 0.95))); // モバイル向けに下限を0.4に緩和
     }, 150);
   }
 
@@ -816,6 +816,49 @@ document.addEventListener('DOMContentLoaded', () => {
       setupBatchPrintMode(batchData.names, batchData.memos, batchData.prices, batchData.qrs);
     });
   }
+
+  // ==========================================================================
+  // 【モバイル向け】フォームの折りたたみ（アコーディオン）制御
+  // ==========================================================================
+  const btnToggleManual = document.getElementById('btn-toggle-manual');
+  const btnCollapseManualBottom = document.getElementById('btn-collapse-manual-bottom');
+  const bodyManual = document.getElementById('body-manual');
+
+  function triggerZoomAdjustment() {
+    autoFitZoom();
+    setTimeout(autoFitZoom, 150);
+    setTimeout(autoFitZoom, 320); // transition時間 300ms を超えたタイミングで確定調整
+  }
+
+  if (btnToggleManual && bodyManual) {
+    btnToggleManual.addEventListener('click', () => {
+      bodyManual.classList.remove('is-collapsed'); // 開く
+      triggerZoomAdjustment();
+    });
+  }
+
+  if (btnCollapseManualBottom && bodyManual) {
+    btnCollapseManualBottom.addEventListener('click', () => {
+      bodyManual.classList.add('is-collapsed'); // 閉じる
+      triggerZoomAdjustment();
+    });
+  }
+
+  // 一括印刷カードのトグル制御
+  function setupAccordionToggle(btnId, bodyId, openText, closeText) {
+    const btn = document.getElementById(btnId);
+    const body = document.getElementById(bodyId);
+    
+    if (!btn || !body) return;
+    
+    btn.addEventListener('click', () => {
+      const isCollapsed = body.classList.toggle('is-collapsed');
+      btn.textContent = isCollapsed ? openText : closeText;
+      triggerZoomAdjustment();
+    });
+  }
+
+  setupAccordionToggle('btn-toggle-batch', 'body-batch', '🔽 詳細を開く', '🔼 詳細を閉じる');
 
   // ==========================================================================================================
   // アプリ起動処理の実行

@@ -25,14 +25,19 @@
       <section class="control-panel">
         <!-- 一括印刷モード時に表示されるメッセージカード (初期状態は非表示) -->
         <div class="panel-card batch-panel-card" id="batch-panel-card" style="display: none;">
-          <div class="panel-header">
-            <h2>📦 一括連続印刷モード</h2>
-            <p>AppSheetからの複数データ連携が起動しています</p>
+          <div class="panel-header" id="header-batch" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1.75rem;">
+            <div class="panel-header-title">
+              <h2>📦 一括連続印刷モード</h2>
+              <p>AppSheetからの複数データ連携が起動しています</p>
+            </div>
+            <button type="button" class="btn-toggle-collapse" id="btn-toggle-batch" aria-label="詳細の開閉">🔼 閉じる</button>
           </div>
-          <div class="batch-status-info">
-            <span class="batch-badge">BATCH MODE</span>
-            <p class="batch-count-text">現在 <strong id="batch-count-val">0</strong> 枚の商品カードが読み込まれています。</p>
-            <p class="batch-desc-text">一括モード中は各カードが自動サイズ調整されて並びます。ハガキの右上に表示される「✏️ 個別編集」から、いつでも個別の微調整や編集が行えます。</p>
+          <div class="panel-body-collapse" id="body-batch">
+            <div class="batch-status-info">
+              <span class="batch-badge">BATCH MODE</span>
+              <p class="batch-count-text">現在 <strong id="batch-count-val">0</strong> 枚の商品カードが読み込まれています。</p>
+              <p class="batch-desc-text">一括モード中は各カードが自動サイズ調整されて並びます。ハガキの右上に表示される「✏️ 個別編集」から、いつでも個別の微調整や編集が行えます。</p>
+            </div>
           </div>
         </div>
 
@@ -46,87 +51,93 @@
         </div>
 
         <div class="panel-card" id="manual-panel-card">
-          <!-- 一括編集から個別に編集モードに入ったときのみ表示するコントロール -->
-          <div id="batch-edit-actions"
-            style="display: none; margin-bottom: 1.5rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--border-color); flex-direction: column; gap: 0.6rem;">
-            <div
-              style="font-size: 0.85rem; color: #10b981; font-weight: 700; display: flex; align-items: center; gap: 0.3rem;">
-              <span>✏️ 一括リストから個別カードを編集中</span>
-            </div>
-            <button type="button" id="btn-save-to-batch" class="btn btn-primary btn-sm"
-              style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); width: 100%; color: white; padding: 0.6rem 1rem;">
-              💾 編集内容を一括リストに反映して戻る
-            </button>
-            <button type="button" id="btn-cancel-to-batch" class="btn btn-secondary btn-sm"
-              style="width: 100%; padding: 0.6rem 1rem;">
-              ✕ 変更を破棄して戻る
-            </button>
-          </div>
-
-          <div class="panel-header">
+          <div class="panel-header" id="header-manual" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1.75rem;">
             <h2>商品情報の入力</h2>
+            <button type="button" class="btn-toggle-collapse" id="btn-toggle-manual" aria-label="フォームの開閉">🔽 フォームを開く</button>
           </div>
 
-          <form id="price-form" onsubmit="event.preventDefault();">
-            <!-- 商品名 -->
-            <div class="form-group">
-              <label for="input-name">商品名 <span class="char-counter" id="name-counter">0文字</span></label>
-              <textarea id="input-name" rows="3" required></textarea>
-              <div class="font-control-wrapper">
-                <div class="toggle-control">
-                  <label class="switch">
-                    <input type="checkbox" id="checkbox-auto-font" checked>
-                    <span class="slider-round"></span>
-                  </label>
-                  <span class="toggle-label">文字サイズ自動調整</span>
-                </div>
-                <div class="slider-control">
-                  <label for="slider-font-size">手動微調整: <span id="font-size-val">24px</span></label>
-                  <input type="range" id="slider-font-size" min="8" max="48" step="0.5" value="24" disabled>
+          <div class="panel-body-collapse" id="body-manual">
+            <!-- 一括編集から個別に編集モードに入ったときのみ表示するコントロール -->
+            <div id="batch-edit-actions"
+              style="display: none; margin-bottom: 1.5rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--border-color); flex-direction: column; gap: 0.6rem;">
+              <div
+                style="font-size: 0.85rem; color: #10b981; font-weight: 700; display: flex; align-items: center; gap: 0.3rem;">
+                <span>✏️ 一括リストから個別カードを編集中</span>
+              </div>
+              <button type="button" id="btn-save-to-batch" class="btn btn-primary btn-sm"
+                style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); width: 100%; color: white; padding: 0.6rem 1rem;">
+                💾 編集内容を一括リストに反映して戻る
+              </button>
+              <button type="button" id="btn-cancel-to-batch" class="btn btn-secondary btn-sm"
+                style="width: 100%; padding: 0.6rem 1rem;">
+                ✕ 変更を破棄して戻る
+              </button>
+            </div>
+
+            <form id="price-form" onsubmit="event.preventDefault();">
+              <!-- 商品名 -->
+              <div class="form-group">
+                <label for="input-name">商品名 <span class="char-counter" id="name-counter">0文字</span></label>
+                <textarea id="input-name" rows="3" required></textarea>
+                <div class="font-control-wrapper">
+                  <div class="toggle-control">
+                    <label class="switch">
+                      <input type="checkbox" id="checkbox-auto-font" checked>
+                      <span class="slider-round"></span>
+                    </label>
+                    <span class="toggle-label">文字サイズ自動調整</span>
+                  </div>
+                  <div class="slider-control">
+                    <label for="slider-font-size">手動微調整: <span id="font-size-val">24px</span></label>
+                    <input type="range" id="slider-font-size" min="8" max="48" step="0.5" value="24" disabled>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <!-- 備考 -->
-            <div class="form-group">
-              <label for="input-memo">備考 <span class="char-counter" id="memo-counter">0文字</span></label>
-              <textarea id="input-memo" rows="4"></textarea>
-              <div class="font-control-wrapper">
-                <div class="toggle-control">
-                  <label class="switch">
-                    <input type="checkbox" id="checkbox-auto-font-memo" checked>
-                    <span class="slider-round"></span>
-                  </label>
-                  <span class="toggle-label">文字サイズ自動調整</span>
-                </div>
-                <div class="slider-control">
-                  <label for="slider-font-size-memo">手動微調整: <span id="font-size-val-memo">12px</span></label>
-                  <input type="range" id="slider-font-size-memo" min="6" max="24" step="0.5" value="12" disabled>
+              <!-- 備考 -->
+              <div class="form-group">
+                <label for="input-memo">備考 <span class="char-counter" id="memo-counter">0文字</span></label>
+                <textarea id="input-memo" rows="4"></textarea>
+                <div class="font-control-wrapper">
+                  <div class="toggle-control">
+                    <label class="switch">
+                      <input type="checkbox" id="checkbox-auto-font-memo" checked>
+                      <span class="slider-round"></span>
+                    </label>
+                    <span class="toggle-label">文字サイズ自動調整</span>
+                  </div>
+                  <div class="slider-control">
+                    <label for="slider-font-size-memo">手動微調整: <span id="font-size-val-memo">12px</span></label>
+                    <input type="range" id="slider-font-size-memo" min="6" max="24" step="0.5" value="12" disabled>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <!-- 価格 -->
-            <div class="form-group">
-              <label for="input-price">価格 (円)</label>
-              <div class="price-input-wrapper">
-                <span class="currency-unit">¥</span>
-                <input type="text" id="input-price" required>
+              <!-- 価格 -->
+              <div class="form-group">
+                <label for="input-price">価格 (円)</label>
+                <div class="price-input-wrapper">
+                  <span class="currency-unit">¥</span>
+                  <input type="text" id="input-price" required>
+                </div>
               </div>
-            </div>
 
-            <!-- 商品詳細URL (QRコード用) -->
-            <div class="form-group">
-              <label for="input-qr-url">商品詳細URL (QRコード化)</label>
-              <input type="text" id="input-qr-url">
-            </div>
+              <!-- 商品詳細URL (QRコード用) -->
+              <div class="form-group">
+                <label for="input-qr-url">商品詳細URL (QRコード化)</label>
+                <input type="text" id="input-qr-url">
+              </div>
 
-            <!-- 作成日 -->
-            <div class="form-group">
-              <label for="input-date">作成日</label>
-              <input type="date" id="input-date">
-            </div>
-          </form>
+              <!-- 作成日 -->
+              <div class="form-group">
+                <label for="input-date">作成日</label>
+                <input type="date" id="input-date">
+              </div>
+            </form>
+
+            <!-- フォーム折りたたみ用（一番下）の閉じるボタン -->
+            <button type="button" class="btn-collapse-bottom" id="btn-collapse-manual-bottom" aria-label="フォームを閉じる">🔼 フォームを閉じる</button>
+          </div>
         </div>
       </section>
 
