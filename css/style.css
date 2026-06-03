@@ -29,13 +29,17 @@
   padding: 0;
 }
 
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+}
+
 body {
   font-family: 'Inter', 'Noto Sans JP', sans-serif;
   background-color: var(--bg-primary);
   color: var(--text-main);
   min-height: 100vh;
   line-height: 1.5;
-  overflow-x: hidden;
 }
 
 /* ==========================================================================
@@ -277,6 +281,7 @@ body {
   align-items: center;
   height: 100%; /* 親の高さに合わせる */
   width: 100%;
+  min-width: 0; /* 追加：Gridレイアウト内の最小幅制限を解除して縮小可能に */
 }
 
 .preview-header {
@@ -332,6 +337,8 @@ body {
 /* プレビューラッパー（背景の市松模様でリアルさを演出） */
 .preview-wrapper {
   width: 100%;
+  max-width: 100%; /* 追加：親幅を超えて広がらないようにする */
+  min-width: 0; /* 追加 */
   min-height: 520px;
   flex-grow: 1; /* 親の高さ（左パネル）に合わせて高さを揃える */
   background-color: #0b0f19;
@@ -342,7 +349,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: auto; /* 複数枚ある時はスクロール可能に */
+  overflow-x: hidden; /* 追加：はみ出した元サイズのカードが横スクロールを発生させるのを防ぐ */
+  overflow-y: auto;   /* 縦方向のスクロールは許可 */
   position: relative;
   padding: 1.5rem 2rem; /* 上下の余分な隙間を半分に狭め、すっきりと表示 */
   box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5);
@@ -1197,6 +1205,8 @@ input:checked + .slider-round:before {
     min-height: 360px;
     padding: 1rem 0.5rem;
     border-radius: 12px;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
 
   .print-actions {
