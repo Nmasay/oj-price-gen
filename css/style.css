@@ -423,8 +423,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
-  max-height: 100%; /* 親の高さ制限25mmを超えないように制限 */
+  overflow: visible; /* はみ出た部分も表示する */
 }
 
 /* 1行目と2行目の間の0.4mmスペース */
