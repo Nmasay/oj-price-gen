@@ -364,7 +364,7 @@ body {
   align-items: center;
   justify-content: center;
   transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  transform-origin: center center;
+  transform-origin: top center;
   padding: 0 10px; /* 上下の余分な余白をカット */
   width: 148mm; /* 追加：本来のハガキの幅に固定 */
   flex-shrink: 0; /* 追加：フレックスアイテムとしての不要な縮小・変形を防止 */
@@ -1210,12 +1210,15 @@ input:checked + .slider-round:before {
   .preview-wrapper {
     order: 2;
     min-height: 360px;
-    padding: 1rem 0.5rem;
+    padding: 1.5rem 0.5rem;
     border-radius: 12px;
     overflow-x: hidden;
     overflow-y: auto;
     width: 100% !important;
     max-width: 100% !important;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
   }
 
   .print-actions {
