@@ -368,6 +368,7 @@ body {
   padding: 0 10px; /* 上下の余分な余白をカット */
   width: 148mm; /* 追加：本来のハガキの幅に固定 */
   flex-shrink: 0; /* 追加：フレックスアイテムとしての不要な縮小・変形を防止 */
+  touch-action: pan-y; /* 横ブレによる余計なスクロールを防止 */
 }
 
 /* ==========================================================================
@@ -1221,6 +1222,7 @@ input:checked + .slider-round:before {
     display: flex;
     align-items: flex-start;
     justify-content: center;
+    touch-action: pan-y; /* モバイルタッチを縦方向のみに制御し横ブレ見切れを防止 */
   }
 
   .print-actions {
