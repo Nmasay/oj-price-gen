@@ -363,8 +363,6 @@ body {
   gap: 30px; /* カード同士の間隔 */
   align-items: center;
   justify-content: center;
-  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  transform-origin: top center;
   padding: 0 10px; /* 上下の余分な余白をカット */
   width: 148mm; /* 追加：本来のハガキの幅に固定 */
   flex-shrink: 0; /* 追加：フレックスアイテムとしての不要な縮小・変形を防止 */

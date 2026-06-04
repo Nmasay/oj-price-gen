@@ -569,7 +569,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function applyZoom(zoom) {
     currentZoom = Math.max(0.4, Math.min(2.0, zoom)); // 40%〜200%の制限
-    postcardScaleContainer.style.transform = `scale(${currentZoom})`;
+    postcardScaleContainer.style.transform = 'none';
+    postcardScaleContainer.style.zoom = currentZoom;
     zoomValue.textContent = `${Math.round(currentZoom * 100)}%`;
   }
 
