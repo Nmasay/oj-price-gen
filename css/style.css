@@ -1209,7 +1209,9 @@ input:checked + .slider-round:before {
 
   .preview-wrapper {
     order: 2;
-    min-height: 360px;
+    height: 500px;
+    min-height: auto;
+    flex-grow: 0;
     padding: 1.5rem 0.5rem;
     border-radius: 12px;
     overflow-x: hidden;
