@@ -1225,4 +1225,41 @@ input:checked + .slider-round:before {
   }
 }
 
+/* PC表示時: モバイル用の戻るボタンは強制非表示 */
+#batch-reset-mobile-card {
+  display: none !important;
+}
+
+@media (max-width: 768px) {
+  /* モバイル表示時: PC用の戻るボタンは強制非表示 */
+  #batch-reset-panel-card {
+    display: none !important;
+  }
+  
+  /* モバイル用の戻るボタンの表示調整 */
+  #batch-reset-mobile-card {
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow-lg);
+  }
+
+  /* モバイル表示時は右上の個別編集ボタンを非表示にする */
+  .card-edit-overlay {
+    display: none !important;
+  }
+  
+  /* カードラッパー全体をタップ可能にするためのスタイル調整 */
+  .postcard-wrapper {
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.15s ease;
+  }
+  
+  /* タップした瞬間（アクティブ状態）の沈み込みフィードバック */
+  .postcard-wrapper:active {
+    transform: scale(0.97) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+  }
+}
+
 

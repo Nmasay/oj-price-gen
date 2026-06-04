@@ -383,6 +383,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const batchResetPanelCard = document.getElementById('batch-reset-panel-card');
     const manualPanelCard = document.getElementById('manual-panel-card');
     const batchCountVal = document.getElementById('batch-count-val');
+    
+    // 一括モード用説明書きを表示
+    const previewSubtitleBatch = document.getElementById('preview-subtitle-batch');
+    if (previewSubtitleBatch) previewSubtitleBatch.style.display = 'block';
 
     // 状態管理変数に保存 (手動編集からの復帰や反映のために使用)
     batchData.names = names;
@@ -399,7 +403,18 @@ document.addEventListener('DOMContentLoaded', () => {
     // 左側UIの切り替え（手動フォームを非表示にし、一括メッセージを表示）
     if (batchPanelCard && manualPanelCard) {
       batchPanelCard.style.display = 'block';
-      if (batchResetPanelCard) batchResetPanelCard.style.display = 'block';
+      
+      // モバイルかどうかに応じて戻るボタンの表示位置を切り替える
+      const isMobile = isMobileUser();
+      const batchResetMobileCard = document.getElementById('batch-reset-mobile-card');
+      if (isMobile) {
+        if (batchResetPanelCard) batchResetPanelCard.style.display = 'none';
+        if (batchResetMobileCard) batchResetMobileCard.style.display = 'block';
+      } else {
+        if (batchResetPanelCard) batchResetPanelCard.style.display = 'block';
+        if (batchResetMobileCard) batchResetMobileCard.style.display = 'none';
+      }
+      
       manualPanelCard.style.display = 'none';
       batchCountVal.textContent = names.length;
     }
@@ -456,11 +471,12 @@ document.addEventListener('DOMContentLoaded', () => {
       // 日付
       if (cardDate) cardDate.textContent = formattedDate;
 
-      // 1枚のハガキを包むラッパーを生成（個別編集ボタンのホバー表示のため）
+      // 1枚のハガキを包むラッパーを生成
       const cardWrapper = document.createElement('div');
       cardWrapper.className = 'postcard-wrapper';
+      cardWrapper.dataset.index = index; // ラッパー自体にインデックスを保持させる
 
-      // 個別編集ボタンのオーバーレイを動的に生成
+      // 個別編集ボタンのオーバーレイを動的に生成（PC表示での個別編集用）
       const editOverlay = document.createElement('div');
       editOverlay.className = 'card-edit-overlay no-print';
       editOverlay.innerHTML = `
@@ -1009,6 +1025,12 @@ document.addEventListener('DOMContentLoaded', () => {
       window.location.href = window.location.origin + window.location.pathname;
     });
   }
+  const btnResetManualMobile = document.getElementById('btn-reset-manual-mobile');
+  if (btnResetManualMobile) {
+    btnResetManualMobile.addEventListener('click', () => {
+      window.location.href = window.location.origin + window.location.pathname;
+    });
+  }
 
   // ==========================================================================
   // 【一括編集】個別カード編集および保存・キャンセル処理
@@ -1073,9 +1095,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const manualPanelCard = document.getElementById('manual-panel-card');
     const batchEditActions = document.getElementById('batch-edit-actions');
     
+    // 一括モード用説明書きを非表示
+    const previewSubtitleBatch = document.getElementById('preview-subtitle-batch');
+    if (previewSubtitleBatch) previewSubtitleBatch.style.display = 'none';
+    
     if (batchPanelCard && manualPanelCard) {
       batchPanelCard.style.display = 'none';
       if (batchResetPanelCard) batchResetPanelCard.style.display = 'none';
+      
+      const batchResetMobileCard = document.getElementById('batch-reset-mobile-card');
+      if (batchResetMobileCard) batchResetMobileCard.style.display = 'none';
+      
       manualPanelCard.style.display = 'block';
     }
     if (batchEditActions) {
@@ -1093,12 +1123,13 @@ document.addEventListener('DOMContentLoaded', () => {
     triggerTextAutofit();
   }
 
-  // 一括プレビュー内の編集ボタンクリックイベント（デリゲーション）
+  // 一括プレビュー内のカードクリックイベント（デリゲーション）
   if (postcardScaleContainer) {
     postcardScaleContainer.addEventListener('click', (e) => {
-      const editBtn = e.target.closest('.btn-card-edit');
-      if (editBtn) {
-        const index = parseInt(editBtn.dataset.index, 10);
+      // カードラッパー全体がクリック対象
+      const cardWrapper = e.target.closest('.postcard-wrapper');
+      if (cardWrapper && cardWrapper.dataset.index !== undefined) {
+        const index = parseInt(cardWrapper.dataset.index, 10);
         startIndividualEdit(index);
       }
     });

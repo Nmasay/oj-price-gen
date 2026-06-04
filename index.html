@@ -143,13 +143,18 @@
 
       <!-- 右パネル: プレビュー -->
       <section class="preview-panel">
-        <div class="preview-header">
-          <h2>リアルタイムプレビュー</h2>
-          <div class="preview-actions">
-            <span class="zoom-indicator" id="zoom-value">100%</span>
-            <button class="btn-icon" id="btn-zoom-out" title="ズームアウト">➖</button>
-            <button class="btn-icon" id="btn-zoom-in" title="ズームイン">➕</button>
+        <div class="preview-header" style="flex-direction: column; align-items: flex-start; gap: 0.25rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+            <h2>リアルタイムプレビュー</h2>
+            <div class="preview-actions">
+              <span class="zoom-indicator" id="zoom-value">100%</span>
+              <button class="btn-icon" id="btn-zoom-out" title="ズームアウト">➖</button>
+              <button class="btn-icon" id="btn-zoom-in" title="ズームイン">➕</button>
+            </div>
           </div>
+          <p class="preview-subtitle-batch no-print" id="preview-subtitle-batch" style="display: none; font-size: 0.8rem; color: #10b981; font-weight: 600; margin-top: 0.25rem;">
+            💡 カードをタップすると個別に編集できます
+          </p>
         </div>
 
         <!-- 印刷ボタンエリア (プレビューの上部に移動) -->
@@ -220,6 +225,15 @@
           </div>
         </div>
       </section>
+
+      <!-- モバイル専用: 単一へ戻るボタン (一括印刷モード時のみ表示、フッターの上に配置) -->
+      <div class="panel-card batch-reset-mobile-card" id="batch-reset-mobile-card"
+        style="display: none; margin-top: 1.5rem; padding: 1.25rem 1.5rem; width: 100%;">
+        <button type="button" class="btn btn-secondary btn-lg" id="btn-reset-manual-mobile"
+          style="width: 100%; padding: 0.8rem 1rem; font-weight: 600;">
+          🔄 単一プライス作成へ戻る
+        </button>
+      </div>
     </main>
 
     <footer class="app-footer">
