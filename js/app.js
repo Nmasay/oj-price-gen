@@ -634,6 +634,21 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ==========================================================================
+  // 6.2. PNG共有ボタンの設定（モバイル専用）
+  // ==========================================================================
+  const btnSharePng = document.getElementById('btn-share-png');
+  if (btnSharePng) {
+    if (isMobileUser()) {
+      btnSharePng.style.display = 'inline-flex';
+    } else {
+      btnSharePng.style.display = 'none';
+    }
+    btnSharePng.addEventListener('click', () => {
+      handleSharePngAction(btnSharePng);
+    });
+  }
+
+  // ==========================================================================
   // 6.5. 印刷用180度回転トグル設定
   // ==========================================================================
   const checkboxPrintRotate = document.getElementById('checkbox-print-rotate');
@@ -963,6 +978,124 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (error) {
       console.error('PDFの生成中にエラーが発生しました:', error);
       alert('PDFの生成に失敗しました。エラー: ' + error.message);
+    } finally {
+      buttonElement.disabled = false;
+      buttonElement.innerHTML = originalText;
+    }
+  }
+
+  /**
+   * PNG画像を生成し、共有またはダウンロードする（モバイル推奨）
+   */
+  async function handleSharePngAction(buttonElement) {
+    const originalText = buttonElement.innerHTML;
+    buttonElement.disabled = true;
+    buttonElement.innerHTML = '⏳ PNG生成を開始...';
+
+    try {
+      const batchPanelCard = document.getElementById('batch-panel-card');
+      const isBatchMode = batchPanelCard && batchPanelCard.style.display === 'block';
+      
+      let cards = [];
+
+      if (isBatchMode) {
+        for (let i = 0; i < batchData.names.length; i++) {
+          cards.push({
+            name: batchData.names[i],
+            memo: batchData.memos[i] || '',
+            price: batchData.prices[i] || '',
+            qrUrl: batchData.qrs[i] || '',
+            date: inputDate.value,
+            titleAuto: batchData.titleAutos[i] !== false,
+            titleSize: batchData.titleSizes[i] || 24,
+            memoAuto: batchData.memoAutos[i] !== false,
+            memoSize: batchData.memoSizes[i] || 12
+          });
+        }
+      } else {
+        cards.push({
+          name: inputName.value.trim(),
+          memo: inputMemo.value.trim(),
+          price: inputPrice.value,
+          qrUrl: inputQrUrl.value.trim(),
+          date: inputDate.value,
+          titleAuto: checkboxAutoFont.checked,
+          titleSize: parseFloat(sliderFontSize.value),
+          memoAuto: checkboxAutoFontMemo.checked,
+          memoSize: parseFloat(sliderFontSizeMemo.value)
+        });
+      }
+
+      if (cards.length === 0) {
+        alert('共有対象のカードが見つかりません。');
+        buttonElement.disabled = false;
+        buttonElement.innerHTML = originalText;
+        return;
+      }
+
+      const isRotate = checkboxPrintRotate ? checkboxPrintRotate.checked : false;
+      const files = [];
+
+      for (let i = 0; i < cards.length; i++) {
+        buttonElement.innerHTML = `⏳ PNG生成中 (${i + 1}/${cards.length})...`;
+        const card = cards[i];
+
+        // 高解像度Canvasに直接描画
+        const canvas = await drawCardToCanvas(
+          card.name,
+          card.memo,
+          card.price,
+          card.date,
+          card.qrUrl,
+          card.titleAuto,
+          card.titleSize,
+          card.memoAuto,
+          card.memoSize,
+          isRotate
+        );
+
+        // Blobに変換
+        const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
+        const fileName = `price_card_${i + 1}.png`;
+        const file = new File([blob], fileName, { type: 'image/png' });
+        files.push(file);
+      }
+
+      buttonElement.innerHTML = '⏳ 共有画面を起動中...';
+
+      // Web Share API による共有
+      if (navigator.canShare && navigator.canShare({ files: files })) {
+        try {
+          await navigator.share({
+            files: files,
+            title: 'プライスカード画像印刷',
+            text: '生成されたプライスカードの画像（PNG）です。EPSONアプリ等に送って印刷してください。'
+          });
+        } catch (shareError) {
+          if (shareError.name !== 'AbortError') {
+            console.error('PNG共有エラー:', shareError);
+            alert('共有に失敗しました。');
+          }
+        }
+      } else {
+        // フォールバック: 1枚ずつダウンロード
+        alert('このブラウザは直接の画像共有に対応していません。画像を順にダウンロードします。');
+        for (let i = 0; i < files.length; i++) {
+          const blobUrl = URL.createObjectURL(files[i]);
+          const a = document.createElement('a');
+          a.href = blobUrl;
+          a.download = files[i].name;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(blobUrl);
+          // ダウンロードの競合を防ぐための僅かな遅延
+          await new Promise(r => setTimeout(r, 500));
+        }
+      }
+    } catch (error) {
+      console.error('PNG生成中にエラーが発生しました:', error);
+      alert('PNGの生成に失敗しました。エラー: ' + error.message);
     } finally {
       buttonElement.disabled = false;
       buttonElement.innerHTML = originalText;
