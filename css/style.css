@@ -449,7 +449,7 @@ body {
 .row-new {
   height: 20mm;
   justify-content: flex-start;
-  padding-top: 5mm; /* 新品を5mm下にさげる */
+  padding-top: 7mm; /* 新品を7mm下にさげる */
   padding-left: 10mm; /* 紙の仕切り線に揃えるための左余白 */
 }
 
@@ -495,9 +495,8 @@ body {
 .row-price {
   margin-top: auto; /* 余った高さをここにすべて集約 */
   height: 25mm;
-  justify-content: flex-start;
-  text-align: left;
-  padding-left: 10mm; /* 新品や備考と揃えるための左余白 */
+  justify-content: center;
+  text-align: center;
   padding-bottom: 2mm; /* 作成日とのバランス調整 */
 }
 

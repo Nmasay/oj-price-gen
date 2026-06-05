@@ -752,7 +752,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ctx.fillStyle = '#dd2222';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'top';
-    ctx.fillText('新品', 120, 360); // 上部から約 30mm
+    ctx.fillText('新品', 120, 384); // 上部から約 32mm
 
     // --- 3. 備考欄の描画 ---
     const memoMaxWidth = 1536;
@@ -783,9 +783,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     ctx.font = `600 280px ${fontPriceFace}`; // 74pt 相当
     ctx.fillStyle = '#111111';
-    ctx.textAlign = 'left';
+    ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
-    ctx.fillText(formattedPrice, 120, 850); // 下部から約 29mm
+    ctx.fillText(formattedPrice, 888, 850); // 下部から約 29mm
 
     // --- 5. QRコードの描画 ---
     if (qrUrl && !isUrlEmpty(qrUrl)) {
