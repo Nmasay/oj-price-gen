@@ -801,7 +801,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ctx.fillStyle = '#111111';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
-    ctx.fillText(formattedPrice, 888, 850); // 下部から約 29mm
+    ctx.fillText(formattedPrice, 888, 790); // 下部から約 29mm
 
     // --- 5. QRコードの描画 ---
     if (qrUrl && !isUrlEmpty(qrUrl)) {

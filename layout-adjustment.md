@@ -66,11 +66,11 @@ PDFに書き出されるハガキ画像は、画面上の表示サイズとは�
 * **対象コードの範囲**: [js/app.js:L779-789](file:///Users/masayan/Documents/oj-price-gen/js/app.js#L779-L789)
 * **位置の変更 (X, Y座標)**: [js/app.js:L788](file:///Users/masayan/Documents/oj-price-gen/js/app.js#L788)
   ```javascript
-  ctx.fillText(formattedPrice, 888, 850); // X: 888 (中央), Y: 850 (約70.8mm)
+  ctx.fillText(formattedPrice, 888, 790); // X: 888 (中央), Y: 790 (約65.8mm)
   ```
   * **調整方法**: 
     * **`888`** (X座標) を変更すると、価格の左右位置を変更できます。
-    * **`850`** (Y座標 / 上部からの位置) を変更すると、価格の上下位置を変更できます。
+    * **`790`** (Y座標 / 上部からの位置) を変更すると、価格の上下位置を変更できます。
 
 ---
 
