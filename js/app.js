@@ -638,9 +638,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==========================================================================
   const checkboxPrintRotate = document.getElementById('checkbox-print-rotate');
   if (checkboxPrintRotate) {
-    // 初期状態の設定（localStorageから復元、デフォルトはON）
+    // 初期状態の設定（localStorageから復元、デフォルトはPCならON、モバイルならOFF）
     const savedRotate = localStorage.getItem('printRotate180');
-    const isRotate = (savedRotate === null || savedRotate === 'true');
+    const defaultRotate = !isMobileUser();
+    const isRotate = (savedRotate === null) ? defaultRotate : (savedRotate === 'true');
     
     checkboxPrintRotate.checked = isRotate;
     if (isRotate) {
