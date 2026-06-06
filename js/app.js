@@ -782,7 +782,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ctx.fillStyle = '#111111';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
-    ctx.fillText(formattedPrice, 888, 790); // 下部から約 29mm
+    ctx.fillText(formattedPrice, 790, 880); // X: 790 (QRコードを避けて左寄りにしたプレビューと同期), Y: 880 (最下部固定プレビューと同期)
 
     // --- 5. QRコードの描画 ---
     if (qrUrl && !isUrlEmpty(qrUrl)) {
