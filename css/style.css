@@ -787,6 +787,13 @@ body {
     display: block !important;
   }
 
+  /* 一枚印刷時（一括用ラッパーが無い場合）のコンテナ印刷制御 */
+  .postcard-scale-container:not(:has(.postcard-wrapper)) {
+    height: 100mm !important;
+    overflow: hidden !important;
+    page-break-inside: avoid !important;
+  }
+
   /* 5. 印刷用ハガキ実寸配置 */
   .postcard {
     position: relative !important;
