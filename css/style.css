@@ -493,11 +493,17 @@ body {
 
 /* 3行目と4行目の間の可変スペース (金額を最下部にピッタリ配置するため) */
 .row-price {
-  margin-top: auto; /* 余った高さをここにすべて集約 */
+  position: absolute;
+  bottom: 0.6mm; /* ハガキの下部の余白 */
+  left: 0.6mm;
+  right: 25mm; /* 右側QRコード（幅20mm + 余白4.5mm = 24.5mm）との重なりを防止 */
   height: 25mm;
-  justify-content: center;
+  display: flex; /* flex構造を強制 */
+  align-items: center; /* 縦方向中央揃え */
+  justify-content: center; /* 横方向中央揃え */
   text-align: center;
   padding-bottom: 2mm; /* 作成日とのバランス調整 */
+  box-sizing: border-box;
 }
 
 /* 4行目: 金額欄 (高さ25mm, 中央揃え) */
