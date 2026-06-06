@@ -162,9 +162,6 @@
           <button type="button" class="btn btn-primary btn-lg" id="btn-print" style="max-width: 100%;">
             <span class="btn-icon-print">🖨️</span> プライスカードを印刷する
           </button>
-          <button type="button" class="btn btn-secondary btn-lg" id="btn-share-png" style="max-width: 100%; margin-top: 0.5rem; display: none;">
-            📸 PNG画像として保存・共有
-          </button>
           <div class="toggle-control print-rotation-toggle" style="margin-top: 0.5rem; justify-content: center; gap: 0.5rem;">
             <label class="switch">
               <input type="checkbox" id="checkbox-print-rotate" checked>
@@ -172,7 +169,7 @@
             </label>
             <span class="toggle-label" style="font-weight: 600; font-size: 0.85rem;">180°回転</span>
           </div>
-          <p class="print-note" style="margin-top: 0.5rem;">※ 用紙サイズを「ハガキ」、方向を「横」、余白「なし」に設定してください。<br>(スマホ印刷時は自動的にPDFが作成され、共有画面が開きます)</p>
+          <p class="print-note" style="margin-top: 0.5rem;">※ 用紙サイズを「ハガキ」、方向を「横」、余白「なし」に設定してください。<br>(スマホ印刷時は自動的に画像が作成され、共有画面が開きます)</p>
         </div>
 
         <div class="preview-wrapper">
@@ -248,7 +245,6 @@
   </div>
 
   <!-- JavaScript Entry -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
   <script type="module" src="./js/app.js"></script>
 </body>
