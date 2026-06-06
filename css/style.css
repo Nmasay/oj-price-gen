@@ -970,6 +970,7 @@ input:checked + .slider-round:before {
   padding: 0 !important;
   border: none !important;
   margin-top: 4px;
+  touch-action: none; /* スライダー操作中の画面左右スライド（スワイプ）を完全に防止 */
 }
 
 .slider-control input[type="range"]::-webkit-slider-thumb {
@@ -1102,9 +1103,17 @@ input:checked + .slider-round:before {
    モバイル対応レイアウト (画面幅768px以下)
    ========================================================================== */
 @media (max-width: 768px) {
+  html, body {
+    overflow-x: hidden;
+    position: relative;
+    width: 100%;
+  }
+
   .app-container {
     padding: 1rem 0.75rem;
     gap: 1.5rem;
+    overflow-x: hidden; /* モバイル時の横揺れ・左右スライドを防止 */
+    max-width: 100vw;
   }
 
   .panel-card {
