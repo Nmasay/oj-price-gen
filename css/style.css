@@ -504,7 +504,7 @@ body {
 .text-price {
   font-family: 'Inter', 'Noto Sans JP', sans-serif; /* スマートで数学的に美しいシャープなフォント */
   font-weight: 600; /* 極太(800)からスマート(600)へ落とし、美しさを両立 */
-  font-size: 74pt;  /* 縦横比を最適化し、文字切れしにくいサイズに微調整 */
+  font-size: 54pt;  /* 枠内に収まるようにサイズを微調整 */
   color: var(--print-color-black);
   letter-spacing: -0.04em; /* カーニングをキュッと引き締めて高級感を演出 */
   display: inline-block;
