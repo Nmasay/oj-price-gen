@@ -305,10 +305,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // 4. URLパラメータ（GET）の解析と読み込み
   // ==========================================================================
 
-  // ==========================================================================
-  // 4. URLパラメータ（GET）の解析と読み込み
-  // ==========================================================================
-
   function loadUrlParameters() {
     const params = new URLSearchParams(window.location.search);
     
@@ -794,7 +790,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 4. 金額欄 of 描画 ---
     // カンマ区切りフォーマット
-    const rawPrice = priceText.replace(/[^\d]/g, '');
+    const rawPrice = (priceText || '').replace(/[^\d]/g, '');
     const formattedPrice = rawPrice ? `￥${Number(rawPrice).toLocaleString()}` : '￥0';
 
     ctx.font = `600 280px ${fontPriceFace}`; // 74pt 相当
