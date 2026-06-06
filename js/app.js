@@ -719,32 +719,66 @@ document.addEventListener('DOMContentLoaded', () => {
     const fontPriceFace = "'Inter', 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', sans-serif";
     const fontDefault = "'Noto Sans JP', 'Hiragino Kaku Gothic ProN', sans-serif";
 
-    // --- 1. 商品タイトルの描画 ---
-    const titleMaxHeight = 260;
-    const titleMaxWidth = 1536; // 1776 - 120(マージン)*2
-    const titleLines = name.split('\n');
-    
-    // スライダーのフォントサイズ (px) を Canvas解像度 (3倍) にスケール
-    let finalTitleSize = titleSize * 3;
-    if (titleAuto) {
-      finalTitleSize = calculateFitFontSize(ctx, name, 144, titleMaxWidth, titleMaxHeight, fontTitleFace, '900');
+    // HTML/CSSの自動改行（word-wrap / pre-wrap）と同じ挙動を再現する文字折り返し・サイズ計算ヘルパー関数
+    function calculateWrappedLines(text, maxWidth, maxHeight, font, weight, targetSize) {
+      let fontSize = targetSize;
+      let lines = [];
+      
+      while (fontSize > 12) {
+        ctx.font = `${weight} ${fontSize}px ${font}`;
+        lines = [];
+        const rawLines = text.split('\n');
+        
+        for (const rawLine of rawLines) {
+          let currentLine = '';
+          for (let i = 0; i < rawLine.length; i++) {
+            const char = rawLine[i];
+            const testLine = currentLine + char;
+            const metrics = ctx.measureText(testLine);
+            if (metrics.width > maxWidth && currentLine !== '') {
+              lines.push(currentLine);
+              currentLine = char;
+            } else {
+              currentLine = testLine;
+            }
+          }
+          if (currentLine !== '') {
+            lines.push(currentLine);
+          }
+        }
+        
+        const lineHeight = fontSize * (weight === '900' ? 1.25 : 1.35);
+        if (lines.length * lineHeight <= maxHeight) {
+          break;
+        }
+        fontSize -= 2;
+      }
+      return { lines, fontSize };
     }
 
-    ctx.font = `900 ${finalTitleSize}px ${fontTitleFace}`;
+    // --- 1. 商品タイトルの描画 ---
+    const titleMaxWidth = 1536; // 1776 - 120*2
+    const titleMaxHeight = 260;
+    
+    // スライダーのフォントサイズ (px) を Canvas解像度 (3倍) にスケール
+    const startTitleSize = titleAuto ? 144 : titleSize * 3;
+    const titleData = calculateWrappedLines(name, titleMaxWidth, titleMaxHeight, fontTitleFace, '900', startTitleSize);
+
+    ctx.font = `900 ${titleData.fontSize}px ${fontTitleFace}`;
     ctx.fillStyle = '#111111';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
 
-    const titleLineHeight = finalTitleSize * 1.25;
-    const totalTitleHeight = titleLines.length * titleLineHeight;
-    let titleY = 102 + (titleMaxHeight - totalTitleHeight) / 2; // 上部マージン 102px (8.5mm)
+    const titleLineHeight = titleData.fontSize * 1.25;
+    const totalTitleHeight = titleData.lines.length * titleLineHeight;
+    let titleY = 102 + (titleMaxHeight - totalTitleHeight) / 2; // 上部マージン 102px
 
-    titleLines.forEach(line => {
+    titleData.lines.forEach(line => {
       ctx.fillText(line, 888, titleY);
       titleY += titleLineHeight;
     });
 
-    // --- 2. 「新品」バッジの描画 ---
+    // --- 2. 「新品」バッジ of 描画 ---
     ctx.font = `900 135px ${fontDefault}`; // 32pt 相当
     ctx.fillStyle = '#dd2222';
     ctx.textAlign = 'left';
@@ -754,21 +788,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 3. 備考欄の描画 ---
     const memoMaxWidth = 1536;
     const memoMaxHeight = 192; // 16mm 相当
-    const memoLines = memo.split('\n');
+    const startMemoSize = memoAuto ? 60 : memoSize * 3;
+    const memoData = calculateWrappedLines(memo, memoMaxWidth, memoMaxHeight, fontMemoFace, '700', startMemoSize);
 
-    let finalMemoSize = memoSize * 3;
-    if (memoAuto) {
-      finalMemoSize = calculateFitFontSize(ctx, memo, 60, memoMaxWidth, memoMaxHeight, fontMemoFace, '700');
-    }
-
-    ctx.font = `700 ${finalMemoSize}px ${fontMemoFace}`;
+    ctx.font = `700 ${memoData.fontSize}px ${fontMemoFace}`;
     ctx.fillStyle = '#0044cc';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'top';
 
-    const memoLineHeight = finalMemoSize * 1.35;
+    const memoLineHeight = memoData.fontSize * 1.35;
     let memoY = 590; // 上部から約 49mm
-    memoLines.forEach(line => {
+    memoData.lines.forEach(line => {
       ctx.fillText(line, 120, memoY);
       memoY += memoLineHeight;
     });
