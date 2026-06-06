@@ -497,7 +497,7 @@ body {
   height: 25mm;
   justify-content: center;
   text-align: center;
-  padding-bottom: 7mm; /* 作成日とのバランス調整 */
+  padding-bottom: 2mm; /* 作成日とのバランス調整 */
 }
 
 /* 4行目: 金額欄 (高さ25mm, 中央揃え) */
