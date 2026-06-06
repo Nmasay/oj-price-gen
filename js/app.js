@@ -1249,7 +1249,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 4. 右側プレビューエリアを一括表示（複数枚）から単体プレビュー（テンプレート）に一時変更
     postcardScaleContainer.innerHTML = '';
-    postcardScaleContainer.appendChild(postcardPreview);
+    
+    // 一括モードと完全に同じレイアウト・印刷制御を適用するため、ラッパーで包んで追加する
+    const singleWrapper = document.createElement('div');
+    singleWrapper.className = 'postcard-wrapper';
+    singleWrapper.id = 'single-card-wrapper';
+    singleWrapper.appendChild(postcardPreview);
+    
+    postcardScaleContainer.appendChild(singleWrapper);
     
     // スケールを通常の手動サイズにフィットさせる
     autoFitZoom();

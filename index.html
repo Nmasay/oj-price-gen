@@ -178,8 +178,10 @@
         <div class="preview-wrapper">
           <!-- スケール制御用コンテナ -->
           <div class="postcard-scale-container" id="postcard-scale-container">
-            <!-- 実際のハガキサイズプライスカード (148mm x 100mm) -->
-            <div class="postcard" id="postcard-preview">
+            <!-- 印刷・レイアウト用ラッパー (一括印刷と同じ構造を適用) -->
+            <div class="postcard-wrapper" id="single-card-wrapper">
+              <!-- 実際のハガキサイズプライスカード (148mm x 100mm) -->
+              <div class="postcard" id="postcard-preview">
               <!-- プレビュー時のみ表示される青いフチ (0.6mm幅) -->
               <div class="preview-blue-border"></div>
 
@@ -224,7 +226,7 @@
                   <div class="card-date" id="card-date-text">2026/5/31</div>
                 </div>
               </div>
-            </div>
+            </div> <!-- postcard-wrapper の閉じタグ -->
           </div>
         </div>
       </section>
