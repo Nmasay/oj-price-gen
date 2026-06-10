@@ -1,8 +1,7 @@
 /**
  * QRコード生成モジュール
- * CDN依存を排除し、npm パッケージから直接インポートする
+ * グローバルの QRCode オブジェクト（CDNから読み込み）を使用する
  */
-import QRCode from 'qrcode';
 import { isUrlEmpty } from '../utils/format.js';
 
 /**
@@ -23,6 +22,12 @@ export function generateQRCode(wrapper, text) {
 
   const canvas = document.createElement('canvas');
   container.appendChild(canvas);
+
+  // グローバルの QRCode オブジェクトを使用する
+  if (typeof QRCode === 'undefined') {
+    console.error('QRCodeライブラリが読み込まれていません。');
+    return;
+  }
 
   QRCode.toCanvas(
     canvas,

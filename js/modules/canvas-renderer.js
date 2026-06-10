@@ -2,7 +2,6 @@
  * プライスカードの Canvas 直接描画モジュール (PNG生成用)
  * 167行の巨大関数を描画ステップごとに分離
  */
-import QRCode from 'qrcode';
 import {
   CARD_LAYOUT,
   FONT_PRIMARY,
