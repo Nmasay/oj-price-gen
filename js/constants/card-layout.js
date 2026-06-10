@@ -39,7 +39,7 @@ export const CARD_LAYOUT = {
 
   price: {
     centerX: 790,
-    y: 880,
+    y: 760, // モバイル画像生成時のみ金額を10mm(120px)上へ移動
     fontSize: 280,
     fontWeight: '600',
     color: '#111111',
