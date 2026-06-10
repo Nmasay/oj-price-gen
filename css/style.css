@@ -1049,6 +1049,107 @@ input:checked + .slider-round:before {
   line-height: 1.5;
 }
 
+/* --- インラインstyleから移行したクラス定義 --- */
+
+/* パネルヘッダーのflex配置 (batch/manual共通) */
+.panel-header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 1rem;
+  margin-bottom: 1.75rem;
+}
+
+/* 一括編集中のアクションエリア */
+.batch-edit-actions {
+  display: none;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border-color);
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+/* 一括編集中のラベル表示 */
+.batch-edit-label {
+  font-size: 0.85rem;
+  color: #10b981;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+/* 一括編集 保存ボタン */
+.btn-batch-save {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border: none;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  width: 100%;
+  color: white;
+  padding: 0.6rem 1rem;
+}
+
+/* 一括編集 キャンセルボタン */
+.btn-batch-cancel {
+  width: 100%;
+  padding: 0.6rem 1rem;
+}
+
+/* 一括モードのリセットパネル (PC) */
+.batch-reset-panel {
+  display: none;
+  margin-top: 1rem;
+  padding: 1.25rem 1.5rem;
+}
+
+/* 一括モードのリセットパネル (モバイル) */
+.batch-reset-mobile {
+  display: none;
+  margin-top: 1.5rem;
+  padding: 1.25rem 1.5rem;
+  width: 100%;
+}
+
+/* リセットボタン共通 */
+.btn-reset-full {
+  width: 100%;
+  padding: 0.6rem 1rem;
+  font-weight: 600;
+}
+
+/* リセットボタン (モバイル版の大サイズ) */
+.btn-reset-full-lg {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  font-weight: 600;
+}
+
+/* プレビューヘッダー内の行ラッパー */
+.preview-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+/* 一括モード時のプレビューサブタイトル */
+.preview-subtitle-batch {
+  display: none;
+  font-size: 0.8rem;
+  color: #10b981;
+  font-weight: 600;
+  margin-top: 0.25rem;
+}
+
+/* 印刷回転トグルの配置 */
+.print-rotation-toggle {
+  margin-top: 0.5rem;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
 /* ==========================================================================
    フォーム折りたたみ（アコーディオン）共通スタイル
    ========================================================================== */

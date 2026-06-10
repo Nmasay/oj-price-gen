@@ -25,7 +25,7 @@
       <section class="control-panel">
         <!-- 一括印刷モード時に表示されるメッセージカード (初期状態は非表示) -->
         <div class="panel-card batch-panel-card" id="batch-panel-card" style="display: none;">
-          <div class="panel-header" id="header-batch" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1.75rem;">
+          <div class="panel-header panel-header-flex" id="header-batch">
             <div class="panel-header-title">
               <h2>📦 一括連続印刷モード</h2>
               <p>AppSheetからの複数データ連携が起動しています</p>
@@ -42,39 +42,33 @@
         </div>
 
         <!-- 独立した手動復帰用パネル（誤操作防止のため一括印刷カードの下に配置） -->
-        <div class="panel-card" id="batch-reset-panel-card"
-          style="display: none; margin-top: 1rem; padding: 1.25rem 1.5rem;">
-          <button type="button" class="btn btn-secondary btn-sm" id="btn-reset-manual"
-            style="width: 100%; padding: 0.6rem 1rem; font-weight: 600;">
+        <div class="panel-card batch-reset-panel" id="batch-reset-panel-card">
+          <button type="button" class="btn btn-secondary btn-sm btn-reset-full" id="btn-reset-manual">
             🔄 単一プライス作成へ戻る
           </button>
         </div>
 
         <div class="panel-card" id="manual-panel-card">
-          <div class="panel-header" id="header-manual" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1.75rem;">
+          <div class="panel-header panel-header-flex" id="header-manual">
             <h2>商品情報の入力</h2>
             <button type="button" class="btn-toggle-collapse" id="btn-toggle-manual" aria-label="フォームの開閉">🔽 フォームを開く</button>
           </div>
 
           <div class="panel-body-collapse" id="body-manual">
             <!-- 一括編集から個別に編集モードに入ったときのみ表示するコントロール -->
-            <div id="batch-edit-actions"
-              style="display: none; margin-bottom: 1.5rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--border-color); flex-direction: column; gap: 0.6rem;">
-              <div
-                style="font-size: 0.85rem; color: #10b981; font-weight: 700; display: flex; align-items: center; gap: 0.3rem;">
+            <div class="batch-edit-actions" id="batch-edit-actions">
+              <div class="batch-edit-label">
                 <span>✏️ 一括リストから個別カードを編集中</span>
               </div>
-              <button type="button" id="btn-save-to-batch" class="btn btn-primary btn-sm"
-                style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); width: 100%; color: white; padding: 0.6rem 1rem;">
+              <button type="button" id="btn-save-to-batch" class="btn btn-primary btn-sm btn-batch-save">
                 💾 編集内容を一括リストに反映して戻る
               </button>
-              <button type="button" id="btn-cancel-to-batch" class="btn btn-secondary btn-sm"
-                style="width: 100%; padding: 0.6rem 1rem;">
+              <button type="button" id="btn-cancel-to-batch" class="btn btn-secondary btn-sm btn-batch-cancel">
                 ✕ 変更を破棄して戻る
               </button>
             </div>
 
-            <form id="price-form" onsubmit="event.preventDefault();">
+            <form id="price-form">
               <!-- 商品名 -->
               <div class="form-group">
                 <label for="input-name">商品名 <span class="char-counter" id="name-counter">0文字</span></label>
@@ -144,7 +138,7 @@
       <!-- 右パネル: プレビュー -->
       <section class="preview-panel">
         <div class="preview-header" style="flex-direction: column; align-items: flex-start; gap: 0.25rem;">
-          <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+          <div class="preview-header-row">
             <h2>リアルタイムプレビュー</h2>
             <div class="preview-actions">
               <span class="zoom-indicator" id="zoom-value">100%</span>
@@ -152,17 +146,17 @@
               <button class="btn-icon" id="btn-zoom-in" title="ズームイン">➕</button>
             </div>
           </div>
-          <p class="preview-subtitle-batch no-print" id="preview-subtitle-batch" style="display: none; font-size: 0.8rem; color: #10b981; font-weight: 600; margin-top: 0.25rem;">
+          <p class="preview-subtitle-batch no-print" id="preview-subtitle-batch">
             💡 カードをタップすると個別に編集できます
           </p>
         </div>
 
         <!-- 印刷ボタンエリア (プレビューの上部に移動) -->
-        <div class="print-actions" style="width: 100%; margin-bottom: 0.5rem;">
+        <div class="print-actions">
           <button type="button" class="btn btn-primary btn-lg" id="btn-print" style="max-width: 100%;">
             <span class="btn-icon-print">🖨️</span> プライスカードを印刷する
           </button>
-          <div class="toggle-control print-rotation-toggle" style="margin-top: 0.5rem; justify-content: center; gap: 0.5rem;">
+          <div class="toggle-control print-rotation-toggle">
             <label class="switch">
               <input type="checkbox" id="checkbox-print-rotate" checked>
               <span class="slider-round"></span>
@@ -230,10 +224,8 @@
       </section>
 
       <!-- モバイル専用: 単一へ戻るボタン (一括印刷モード時のみ表示、フッターの上に配置) -->
-      <div class="panel-card batch-reset-mobile-card" id="batch-reset-mobile-card"
-        style="display: none; margin-top: 1.5rem; padding: 1.25rem 1.5rem; width: 100%;">
-        <button type="button" class="btn btn-secondary btn-lg" id="btn-reset-manual-mobile"
-          style="width: 100%; padding: 0.8rem 1rem; font-weight: 600;">
+      <div class="panel-card batch-reset-mobile-card batch-reset-mobile" id="batch-reset-mobile-card">
+        <button type="button" class="btn btn-secondary btn-lg btn-reset-full-lg" id="btn-reset-manual-mobile">
           🔄 単一プライス作成へ戻る
         </button>
       </div>
@@ -244,8 +236,7 @@
     </footer>
   </div>
 
-  <!-- JavaScript Entry -->
-  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <!-- JavaScript Entry (QRCodeはnpm importに移行したためCDN不要) -->
   <script type="module" src="./js/app.js"></script>
 </body>
 
