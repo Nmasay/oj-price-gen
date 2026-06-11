@@ -39,7 +39,7 @@ export const CARD_LAYOUT = {
 
   price: {
     centerX: 790,
-    y: 760, // モバイル画像生成時のみ金額を10mm(120px)上へ移動
+    y: 808, // モバイル画像生成時のみ金額を6mm(72px)上へ移動 (元880)
     fontSize: 280,
     fontWeight: '600',
     color: '#111111',
@@ -47,7 +47,7 @@ export const CARD_LAYOUT = {
 
   qr: {
     x: 1482,
-    y: 870,
+    y: 822, // モバイル画像生成時のみ4mm(48px)上に移動(元870)
     size: 240,
     labelFontSize: 32,
     labelText: '商品詳細',
