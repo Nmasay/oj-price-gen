@@ -15,11 +15,13 @@
   --glass-bg: rgba(30, 41, 59, 0.7);
   --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
   --shadow-card: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-  
+
   /* プライスカード印刷用カラー（紙の色に依存しない実印刷色） */
   --print-color-black: #111111;
-  --print-color-blue: #0044cc; /* 鮮やかかつ深みのある視認性の良い青 */
-  --print-color-red: #dd2222;  /* 視認性の高い鮮やかな赤 */
+  --print-color-blue: #0044cc;
+  /* 鮮やかかつ深みのある視認性の良い青 */
+  --print-color-red: #dd2222;
+  /* 視認性の高い鮮やかな赤 */
 }
 
 /* --- リセット & 基本設定 --- */
@@ -29,7 +31,8 @@
   padding: 0;
 }
 
-html, body {
+html,
+body {
   overflow-x: hidden;
   width: 100%;
 }
@@ -98,7 +101,8 @@ body {
   display: grid;
   grid-template-columns: 450px 1fr;
   gap: 2rem;
-  align-items: start; /* 左右の強制的な引き伸ばしを解除し、自然な高さを維持 */
+  align-items: start;
+  /* 左右の強制的な引き伸ばしを解除し、自然な高さを維持 */
 }
 
 @media (max-width: 1024px) {
@@ -106,6 +110,7 @@ body {
     grid-template-columns: 1fr;
     align-items: start;
   }
+
   .control-panel {
     position: static;
   }
@@ -116,13 +121,15 @@ body {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  position: sticky; /* 複数枚のスクロール時にも画面内に留まるプレミアム追従仕様 */
+  position: sticky;
+  /* 複数枚のスクロール時にも画面内に留まるプレミアム追従仕様 */
   top: 2rem;
   z-index: 10;
 }
 
-.control-panel > .panel-card {
-  flex: 0 0 auto; /* 高さはコンテンツの自然なサイズに留める */
+.control-panel>.panel-card {
+  flex: 0 0 auto;
+  /* 高さはコンテンツの自然なサイズに留める */
 }
 
 .panel-card {
@@ -279,9 +286,11 @@ body {
   flex-direction: column;
   gap: 1.5rem;
   align-items: center;
-  height: 100%; /* 親の高さに合わせる */
+  height: 100%;
+  /* 親の高さに合わせる */
   width: 100%;
-  min-width: 0; /* 追加：Gridレイアウト内の最小幅制限を解除して縮小可能に */
+  min-width: 0;
+  /* 追加：Gridレイアウト内の最小幅制限を解除して縮小可能に */
 }
 
 .preview-header {
@@ -337,10 +346,13 @@ body {
 /* プレビューラッパー（背景の市松模様でリアルさを演出） */
 .preview-wrapper {
   width: 100%;
-  max-width: 100%; /* 追加：親幅を超えて広がらないようにする */
-  min-width: 0; /* 追加 */
+  max-width: 100%;
+  /* 追加：親幅を超えて広がらないようにする */
+  min-width: 0;
+  /* 追加 */
   min-height: 520px;
-  flex-grow: 1; /* 親の高さ（左パネル）に合わせて高さを揃える */
+  flex-grow: 1;
+  /* 親の高さ（左パネル）に合わせて高さを揃える */
   background-color: #0b0f19;
   background-image: radial-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 0);
   background-size: 24px 24px;
@@ -349,24 +361,33 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow-x: hidden; /* 追加：はみ出した元サイズのカードが横スクロールを発生させるのを防ぐ */
-  overflow-y: auto;   /* 縦方向のスクロールは許可 */
+  overflow-x: hidden;
+  /* 追加：はみ出した元サイズのカードが横スクロールを発生させるのを防ぐ */
+  overflow-y: auto;
+  /* 縦方向のスクロールは許可 */
   position: relative;
-  padding: 1.5rem 2rem; /* 上下の余分な隙間を半分に狭め、すっきりと表示 */
+  padding: 1.5rem 2rem;
+  /* 上下の余分な隙間を半分に狭め、すっきりと表示 */
   box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
 /* スケール制御コンテナ */
 .postcard-scale-container {
   display: flex;
-  flex-direction: column; /* 複数枚あるときは縦に並べる */
-  gap: 30px; /* カード同士の間隔 */
+  flex-direction: column;
+  /* 複数枚あるときは縦に並べる */
+  gap: 30px;
+  /* カード同士の間隔 */
   align-items: center;
   justify-content: center;
-  padding: 0 10px; /* 上下の余分な余白をカット */
-  width: 148mm; /* 追加：本来のハガキの幅に固定 */
-  flex-shrink: 0; /* 追加：フレックスアイテムとしての不要な縮小・変形を防止 */
-  touch-action: pan-y; /* 横ブレによる余計なスクロールを防止 */
+  padding: 0 10px;
+  /* 上下の余分な余白をカット */
+  width: 148mm;
+  /* 追加：本来のハガキの幅に固定 */
+  flex-shrink: 0;
+  /* 追加：フレックスアイテムとしての不要な縮小・変形を防止 */
+  touch-action: pan-y;
+  /* 横ブレによる余計なスクロールを防止 */
 }
 
 /* ==========================================================================
@@ -378,7 +399,8 @@ body {
   height: 100mm;
   background-color: #ffffff;
   box-shadow: var(--shadow-card);
-  border-radius: 2px; /* 実際の紙らしく、ごくわずかな角丸 */
+  border-radius: 2px;
+  /* 実際の紙らしく、ごくわずかな角丸 */
   overflow: hidden;
   box-sizing: border-box;
 }
@@ -390,7 +412,8 @@ body {
   left: 0;
   width: 148mm;
   height: 100mm;
-  border: 3.5mm solid #0055ff; /* 飾りフチの青帯を3.5mmに微調整 */
+  border: 3.5mm solid #0055ff;
+  /* 飾りフチの青帯を3.5mmに微調整 */
   box-sizing: border-box;
   pointer-events: none;
   z-index: 10;
@@ -421,21 +444,25 @@ body {
   height: 25mm;
   justify-content: center;
   text-align: center;
-  padding: 8.5mm 5mm 0; /* 上部に8.5mmの余白を設け、飾りフチから文字をスマートに離して配置（5mm下げた） */
+  padding: 8.5mm 5mm 0;
+  /* 上部に8.5mmの余白を設け、飾りフチから文字をスマートに離して配置（5mm下げた） */
 }
 
 .row-title .text-fit-container {
   width: 100%;
-  font-family: 'Inter', 'Noto Sans JP', sans-serif; /* 金額と同系統のスマートで最高峰なフォントシステム */
+  font-family: 'Inter', 'Noto Sans JP', sans-serif;
+  /* 金額と同系統のスマートで最高峰なフォントシステム */
   font-weight: 900;
   color: var(--print-color-black);
   line-height: 1.2;
-  white-space: pre-wrap; /* 改行コードおよび自動改行を許可 */
+  white-space: pre-wrap;
+  /* 改行コードおよび自動改行を許可 */
   word-break: break-all;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: visible; /* はみ出た部分も表示する */
+  overflow: visible;
+  /* はみ出た部分も表示する */
 }
 
 /* 1行目と2行目の間の0.4mmスペース */
@@ -449,15 +476,19 @@ body {
 .row-new {
   height: 20mm;
   justify-content: flex-start;
-  padding-top: 7mm; /* 新品を7mm下にさげる */
-  padding-left: 10mm; /* 紙の仕切り線に揃えるための左余白 */
+  padding-top: 7mm;
+  /* 新品を7mm下にさげる */
+  padding-left: 10mm;
+  /* 紙の仕切り線に揃えるための左余白 */
 }
 
 .text-new {
   font-family: 'Noto Sans JP', sans-serif;
   font-weight: 900;
-  font-size: 32pt; /* 大きく新品と主張 */
-  color: var(--print-color-red); /* 新品は赤 */
+  font-size: 32pt;
+  /* 大きく新品と主張 */
+  color: var(--print-color-red);
+  /* 新品は赤 */
   letter-spacing: 0.1em;
 }
 
@@ -465,7 +496,8 @@ body {
 .preview-divider {
   height: 1px;
   background-color: rgba(0, 102, 255, 0.7);
-  margin: 0 10mm; /* 左右10mm切れた仕切り */
+  margin: 0 10mm;
+  /* 左右10mm切れた仕切り */
   pointer-events: none;
   z-index: 5;
 }
@@ -474,14 +506,17 @@ body {
 .row-memo {
   height: 16mm;
   justify-content: flex-start;
-  padding: 4mm 10mm 0; /* 備考を4mm下にさげる */
+  padding: 4mm 10mm 0;
+  /* 備考を4mm下にさげる */
 }
 
 .row-memo .text-fit-container {
   width: 100%;
-  font-family: 'Inter', 'Noto Sans JP', sans-serif; /* 金額と同系統のスマートで最高峰なフォントシステム */
+  font-family: 'Inter', 'Noto Sans JP', sans-serif;
+  /* 金額と同系統のスマートで最高峰なフォントシステム */
   font-weight: 700;
-  color: var(--print-color-blue); /* 備考は青色 */
+  color: var(--print-color-blue);
+  /* 備考は青色 */
   line-height: 1.35;
   text-align: left;
   word-break: break-all;
@@ -494,25 +529,35 @@ body {
 /* 3行目と4行目の間の可変スペース (金額を最下部にピッタリ配置するため) */
 .row-price {
   position: absolute;
-  bottom: 0.6mm; /* ハガキの下部の余白 */
+  bottom: 0.6mm;
+  /* ハガキの下部の余白 */
   left: 0.6mm;
-  right: 25mm; /* 右側QRコード（幅20mm + 余白4.5mm = 24.5mm）との重なりを防止 */
+  right: 25mm;
+  /* 右側QRコード（幅20mm + 余白4.5mm = 24.5mm）との重なりを防止 */
   height: 25mm;
-  display: flex; /* flex構造を強制 */
-  align-items: center; /* 縦方向中央揃え */
-  justify-content: center; /* 横方向中央揃え */
+  display: flex;
+  /* flex構造を強制 */
+  align-items: center;
+  /* 縦方向中央揃え */
+  justify-content: center;
+  /* 横方向中央揃え */
   text-align: center;
-  padding-bottom: 2mm; /* 作成日とのバランス調整 */
+  padding-bottom: 5mm;
+  /* 作成日とのバランス調整 */
   box-sizing: border-box;
 }
 
 /* 4行目: 金額欄 (高さ25mm, 中央揃え) */
 .text-price {
-  font-family: 'Inter', 'Noto Sans JP', sans-serif; /* スマートで数学的に美しいシャープなフォント */
-  font-weight: 600; /* 極太(800)からスマート(600)へ落とし、美しさを両立 */
-  font-size: 74pt;  /* 枠内に収まるようにサイズを微調整 */
+  font-family: 'Inter', 'Noto Sans JP', sans-serif;
+  /* スマートで数学的に美しいシャープなフォント */
+  font-weight: 600;
+  /* 極太(800)からスマート(600)へ落とし、美しさを両立 */
+  font-size: 74pt;
+  /* 枠内に収まるようにサイズを微調整 */
   color: var(--print-color-black);
-  letter-spacing: -0.04em; /* カーニングをキュッと引き締めて高級感を演出 */
+  letter-spacing: -0.04em;
+  /* カーニングをキュッと引き締めて高級感を演出 */
   display: inline-block;
   line-height: 1;
 }
@@ -523,25 +568,32 @@ body {
   right: 4.5mm;
   bottom: 2.5mm;
   display: flex;
-  flex-direction: column; /* 縦並び */
-  align-items: flex-end; /* 右端にピタッと揃える */
-  gap: 1.5mm; /* QRコードと日付の間の余白 */
+  flex-direction: column;
+  /* 縦並び */
+  align-items: flex-end;
+  /* 右端にピタッと揃える */
+  gap: 1.5mm;
+  /* QRコードと日付の間の余白 */
   z-index: 15;
 }
 
 /* QRコードラッパー (文字ラベルとQRコンテナを包含) */
 .qr-code-wrapper {
-  display: none; /* 初期状態は非表示 */
+  display: none;
+  /* 初期状態は非表示 */
   flex-direction: column;
-  align-items: center; /* ラッパー内は中央揃え */
-  gap: 0.5mm; /* ラベルとQRコードの僅かな隙間 */
+  align-items: center;
+  /* ラッパー内は中央揃え */
+  gap: 0.5mm;
+  /* ラベルとQRコードの僅かな隙間 */
 }
 
 /* QRコード上の文字ラベル */
 .qr-label {
   font-family: 'Noto Sans JP', sans-serif;
   font-weight: 700;
-  font-size: 8pt; /* 20mmQRコードに合わせたサイズに変更 */
+  font-size: 8pt;
+  /* 20mmQRコードに合わせたサイズに変更 */
   color: var(--print-color-black);
   line-height: 1;
   letter-spacing: 0.02em;
@@ -552,8 +604,10 @@ body {
 .qr-code-container {
   width: 20mm;
   height: 20mm;
-  background-color: #ffffff; /* スマホスキャンを保証するための白背景 */
-  padding: 0.8mm; /* QRコード周囲の保護用白い余白 */
+  background-color: #ffffff;
+  /* スマホスキャンを保証するための白背景 */
+  padding: 0.8mm;
+  /* QRコード周囲の保護用白い余白 */
   box-sizing: border-box;
 }
 
@@ -565,7 +619,8 @@ body {
 
 /* 作成日 (YYYY/M/D) */
 .card-date {
-  font-family: 'Inter', 'Noto Sans JP', sans-serif; /* 金額と同系統のスマートで最高峰なフォントシステム */
+  font-family: 'Inter', 'Noto Sans JP', sans-serif;
+  /* 金額と同系統のスマートで最高峰なフォントシステム */
   font-weight: 500;
   font-size: 8.5pt;
   color: var(--print-color-black);
@@ -720,21 +775,28 @@ body {
    印刷用CSSスタイリング (@media print)
    ========================================================================== */
 @media print {
+
   /* 1. ページおよびボディ設定 */
   @page {
-    size: 148mm 100mm; /* ハガキサイズ横向き指定 */
-    margin: 0 !important; /* ブラウザ標準の余白を完全排除 */
+    size: 148mm 100mm;
+    /* ハガキサイズ横向き指定 */
+    margin: 0 !important;
+    /* ブラウザ標準の余白を完全排除 */
   }
 
-  html, body {
+  html,
+  body {
     width: 148mm !important;
-    height: auto !important; /* 複数枚に対応させるため自動に */
+    height: auto !important;
+    /* 複数枚に対応させるため自動に */
     margin: 0 !important;
     padding: 0 !important;
     background: #ffffff !important;
     color: #000000 !important;
-    overflow: visible !important; /* はみ出し（複数ページ）を許可 */
-    -webkit-print-color-adjust: exact !important; /* 背景色・印刷色調整の強制 */
+    overflow: visible !important;
+    /* はみ出し（複数ページ）を許可 */
+    -webkit-print-color-adjust: exact !important;
+    /* 背景色・印刷色調整の強制 */
     print-color-adjust: exact !important;
   }
 
@@ -756,10 +818,12 @@ body {
     margin: 0 !important;
     max-width: 148mm !important;
     width: 148mm !important;
-    height: auto !important; /* 複数枚に対応させるため自動に */
+    height: auto !important;
+    /* 複数枚に対応させるため自動に */
     border: none !important;
     background: transparent !important;
-    overflow: visible !important; /* はみ出し（複数ページ）を許可 */
+    overflow: visible !important;
+    /* はみ出し（複数ページ）を許可 */
   }
 
   /* 3. プレビュー専用要素の非表示（青フチ、青仕切り線、編集オーバーレイ） */
@@ -782,14 +846,16 @@ body {
   .postcard-scale-container {
     position: relative !important;
     width: 148mm !important;
-    height: auto !important; /* 複数枚に対応させるため自動に */
+    height: auto !important;
+    /* 複数枚に対応させるため自動に */
     padding: 0 !important;
     margin: 0 !important;
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
     transform: none !important;
-    overflow: visible !important; /* はみ出し（複数ページ）を許可 */
+    overflow: visible !important;
+    /* はみ出し（複数ページ）を許可 */
     display: block !important;
   }
 
@@ -797,31 +863,39 @@ body {
   /* 5. 印刷用ハガキ実寸配置 */
   .postcard {
     position: relative !important;
-    display: block !important; /* ブロック化で余白を完全排除 */
+    display: block !important;
+    /* ブロック化で余白を完全排除 */
     width: 148mm !important;
     height: 100mm !important;
     margin: 0 !important;
     padding: 0 !important;
     box-shadow: none !important;
     border: none !important;
-    background: transparent !important; /* 紙に印刷されているため背景は透明 */
+    background: transparent !important;
+    /* 紙に印刷されているため背景は透明 */
     box-sizing: border-box !important;
-    overflow: hidden !important; /* 万が一のはみ出しも完全にカット */
+    overflow: hidden !important;
+    /* 万が一のはみ出しも完全にカット */
   }
 
   /* 親ラッパーに対して正確に改ページおよび白紙防止を適用 */
   .postcard-wrapper {
     position: relative !important;
-    display: block !important; /* inline-blockの改行隙間(4px)を完全消去 */
+    display: block !important;
+    /* inline-blockの改行隙間(4px)を完全消去 */
     width: 148mm !important;
-    height: 100mm !important; /* 厳密に100mmに統一 */
+    height: 100mm !important;
+    /* 厳密に100mmに統一 */
     margin: 0 !important;
     padding: 0 !important;
     box-sizing: border-box !important;
-    overflow: hidden !important; /* 1ピクセルのはみ出しも絶対に許さない */
+    overflow: hidden !important;
+    /* 1ピクセルのはみ出しも絶対に許さない */
     page-break-inside: avoid !important;
-    break-after: page !important; /* 各ハガキの切れ目で正確に改ページ */
-    page-break-after: always !important; /* レガシーブラウザ互換 */
+    break-after: page !important;
+    /* 各ハガキの切れ目で正確に改ページ */
+    page-break-after: always !important;
+    /* レガシーブラウザ互換 */
   }
 
   /* 最後のラッパーの後ろには余分な改ページを入れない（白紙ページ防止） */
@@ -833,8 +907,10 @@ body {
   .postcard-content {
     display: flex !important;
     flex-direction: column !important;
-    height: 100% !important; /* 印刷時の高さ潰れを防止 */
-    padding: 0.6mm !important; /* 厳密に上下左右0.6mmの余白を維持 */
+    height: 100% !important;
+    /* 印刷時の高さ潰れを防止 */
+    padding: 0.6mm !important;
+    /* 厳密に上下左右0.6mmの余白を維持 */
   }
 
   /* 印刷用の色調整保証 */
@@ -844,7 +920,8 @@ body {
   }
 
   .text-price {
-    color: #111111 !important; /* 印刷時のCSS変数解決エラーによる文字消えを防止 */
+    color: #111111 !important;
+    /* 印刷時のCSS変数解決エラーによる文字消えを防止 */
   }
 
   .qr-code-container {
@@ -854,11 +931,13 @@ body {
   }
 
   .text-new {
-    color: var(--print-color-red) !important; /* 新品の赤印刷を保証 */
+    color: var(--print-color-red) !important;
+    /* 新品の赤印刷を保証 */
   }
 
   .row-memo .text-fit-container {
-    color: var(--print-color-blue) !important; /* 備考の青印刷を保証 */
+    color: var(--print-color-blue) !important;
+    /* 備考の青印刷を保証 */
   }
 
   /* 印刷時に180度回転する（カードのサイズやレイアウトを維持したまま、中身だけを回転） */
@@ -932,15 +1011,15 @@ body {
   border-radius: 50%;
 }
 
-input:checked + .slider-round {
+input:checked+.slider-round {
   background: var(--accent-gradient);
 }
 
-input:focus + .slider-round {
+input:focus+.slider-round {
   box-shadow: 0 0 1px var(--accent-color);
 }
 
-input:checked + .slider-round:before {
+input:checked+.slider-round:before {
   transform: translateX(18px);
 }
 
@@ -970,7 +1049,8 @@ input:checked + .slider-round:before {
   padding: 0 !important;
   border: none !important;
   margin-top: 4px;
-  touch-action: none; /* スライダー操作中の画面左右スライド（スワイプ）を完全に防止 */
+  touch-action: none;
+  /* スライダー操作中の画面左右スライド（スワイプ）を完全に防止 */
 }
 
 .slider-control input[type="range"]::-webkit-slider-thumb {
@@ -1182,7 +1262,8 @@ input:checked + .slider-round:before {
 
 /* 折りたたみ対象コンテナ */
 .panel-body-collapse {
-  max-height: 1200px; /* 十分に大きい値 */
+  max-height: 1200px;
+  /* 十分に大きい値 */
   opacity: 1;
   overflow: hidden;
   transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease, margin 0.3s ease, padding 0.3s ease;
@@ -1204,7 +1285,9 @@ input:checked + .slider-round:before {
    モバイル対応レイアウト (画面幅768px以下)
    ========================================================================== */
 @media (max-width: 768px) {
-  html, body {
+
+  html,
+  body {
     overflow-x: hidden;
     position: relative;
     width: 100%;
@@ -1213,7 +1296,8 @@ input:checked + .slider-round:before {
   .app-container {
     padding: 1rem 0.75rem;
     gap: 1.5rem;
-    overflow-x: hidden; /* モバイル時の横揺れ・左右スライドを防止 */
+    overflow-x: hidden;
+    /* モバイル時の横揺れ・左右スライドを防止 */
     max-width: 100vw;
   }
 
@@ -1260,7 +1344,7 @@ input:checked + .slider-round:before {
   .panel-card:has(.panel-body-collapse.is-collapsed) {
     padding-bottom: 1.25rem;
   }
-  
+
   .panel-card:has(.panel-body-collapse.is-collapsed) .panel-header {
     margin-bottom: 0 !important;
     border-bottom: none !important;
@@ -1292,13 +1376,15 @@ input:checked + .slider-round:before {
   }
 
   .form-group textarea#input-name {
-    height: 62px; /* 高さを抑えて3行から2行程度に */
+    height: 62px;
+    /* 高さを抑えて3行から2行程度に */
     min-height: 50px;
     resize: none;
   }
 
   .form-group textarea#input-memo {
-    height: 76px; /* 4行から2.5行程度に */
+    height: 76px;
+    /* 4行から2.5行程度に */
     min-height: 60px;
     resize: none;
   }
@@ -1342,7 +1428,8 @@ input:checked + .slider-round:before {
     display: flex;
     align-items: flex-start;
     justify-content: center;
-    touch-action: pan-y; /* モバイルタッチを縦方向のみに制御し横ブレ見切れを防止 */
+    touch-action: pan-y;
+    /* モバイルタッチを縦方向のみに制御し横ブレ見切れを防止 */
   }
 
   .print-actions {
@@ -1358,11 +1445,12 @@ input:checked + .slider-round:before {
 }
 
 @media (max-width: 768px) {
+
   /* モバイル表示時: PC用の戻るボタンは強制非表示 */
   #batch-reset-panel-card {
     display: none !important;
   }
-  
+
   /* モバイル用の戻るボタンの表示調整 */
   #batch-reset-mobile-card {
     margin-top: 1rem;
@@ -1374,19 +1462,17 @@ input:checked + .slider-round:before {
   .card-edit-overlay {
     display: none !important;
   }
-  
+
   /* カードラッパー全体をタップ可能にするためのスタイル調整 */
   .postcard-wrapper {
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
     transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.15s ease;
   }
-  
+
   /* タップした瞬間（アクティブ状態）の沈み込みフィードバック */
   .postcard-wrapper:active {
     transform: scale(0.97) !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
   }
 }
-
-
